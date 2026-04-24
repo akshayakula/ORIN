@@ -1,0 +1,269 @@
+RIN Year,Fuel,Fuel Code,Fuel Category,Fuel Category Code,RIN Quantity,Batch Volume
+2011,Advanced Biofuel,5,"Biogas (77,000 Btu LHV/1 gallon)",80,1423894,1423894
+2012,Advanced Biofuel,5,"Biogas (77,000 Btu LHV/1 gallon)",80,2882009,2882009
+2013,Advanced Biofuel,5,"Biogas (77,000 Btu LHV/1 gallon)",80,25934813,25934813
+2014,Advanced Biofuel,5,"Biogas (77,000 Btu LHV/1 gallon)",80,20352691,20352691
+2018,Advanced Biofuel,5,LPG (EV 1.1),160,726068,660061
+2019,Advanced Biofuel,5,LPG (EV 1.1),160,4630318,4209380
+2020,Advanced Biofuel,5,LPG (EV 1.1),160,4737438,4306761
+2021,Advanced Biofuel,5,LPG (EV 1.1),160,5049347,4590315
+2022,Advanced Biofuel,5,LPG (EV 1.1),160,4933775,4485248
+2023,Advanced Biofuel,5,LPG (EV 1.1),160,5191382,4719437
+2024,Advanced Biofuel,5,LPG (EV 1.1),160,1022782,929802
+2025,Advanced Biofuel,5,LPG (EV 1.1),160,65823,59839
+2019,Advanced Biofuel,5,Naphtha (EV 1.4),132,3466307,2475934
+2020,Advanced Biofuel,5,Naphtha (EV 1.4),132,4749675,3392626
+2021,Advanced Biofuel,5,Naphtha (EV 1.4),132,4913953,3509965
+2022,Advanced Biofuel,5,Naphtha (EV 1.4),132,2269402,1621002
+2023,Advanced Biofuel,5,Naphtha (EV 1.4),132,1199778,856984
+2024,Advanced Biofuel,5,Naphtha (EV 1.4),132,32173831,22981307
+2025,Advanced Biofuel,5,Naphtha (EV 1.4),132,25616461,18297474
+2013,Advanced Biofuel,5,Naphtha (EV 1.5),130,3466737,2311157
+2014,Advanced Biofuel,5,Naphtha (EV 1.5),130,18140883,12093919
+2015,Advanced Biofuel,5,Naphtha (EV 1.5),130,23988365,15992239
+2016,Advanced Biofuel,5,Naphtha (EV 1.5),130,27166789,18111187
+2017,Advanced Biofuel,5,Naphtha (EV 1.5),130,31529071,21019366
+2018,Advanced Biofuel,5,Naphtha (EV 1.5),130,32101934,21401280
+2019,Advanced Biofuel,5,Naphtha (EV 1.5),130,33093112,22062065
+2020,Advanced Biofuel,5,Naphtha (EV 1.5),130,28143356,18762230
+2021,Advanced Biofuel,5,Naphtha (EV 1.5),130,28349335,18899543
+2022,Advanced Biofuel,5,Naphtha (EV 1.5),130,93246330,62164183
+2023,Advanced Biofuel,5,Naphtha (EV 1.5),130,77297960,51531853
+2024,Advanced Biofuel,5,Naphtha (EV 1.5),130,62691684,41794269
+2025,Advanced Biofuel,5,Naphtha (EV 1.5),130,10805019,7203295
+2010,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,4043017,4043017
+2011,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,193748805,193748805
+2012,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,603461683,603461683
+2013,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,458250657,458250657
+2014,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,90298203,90298203
+2015,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,113785284,113785284
+2016,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,61459280,61459280
+2017,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,99392347,99392347
+2018,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,102382010,102382010
+2019,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,219495304,219495304
+2020,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,208638249,208638249
+2021,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,85586001,85586001
+2022,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,109468380,109468380
+2023,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,51169403,51169403
+2024,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,28685489,28685489
+2025,Advanced Biofuel,5,Non-cellulosic Ethanol (EV 1.0),10,6735096,6735096
+2010,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.6),41,8280103,5175074
+2011,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.6),41,19493670,12183578
+2012,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.6),41,3467654,2167286
+2013,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.6),41,18579,11612
+2014,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.6),41,480,300
+2010,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,4491343,2641962
+2011,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,7711272,4536038
+2012,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,17065219,10038332
+2013,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,70153902,41266830
+2014,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,14628048,8604718
+2015,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,8465623,4979775
+2016,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,7932226,4666016
+2017,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,8750305,5147237
+2018,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,40133415,23607885
+2019,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,58299481,34293809
+2020,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,86014356,50596671
+2021,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,106156180,62444807
+2022,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,129144016,75967064
+2023,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,122673890,72161104
+2024,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,114254837,67208720
+2025,Advanced Biofuel,5,Non-ester Renewable Diesel (EV 1.7),40,28257400,16622000
+2014,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,6344,6344
+2015,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,5022,5022
+2017,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,2018098,2018098
+2018,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,1160742,1160742
+2019,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,83027,83027
+2020,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,85371,85371
+2021,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,1659418,1659418
+2022,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,1053739,1053739
+2023,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,1553570,1553570
+2024,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,1252569,1252569
+2025,Advanced Biofuel,5,Renewable Compressed Natural Gas,190,14085,14085
+2025,Advanced Biofuel,5,Renewable Compressed Natural Gas - CNG,195,69598,69598
+2010,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,11797169,7373229
+2011,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,6180377,3862744
+2012,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,196124,122579
+2014,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,113884,71177
+2015,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,847149,529467
+2016,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,1544722,965452
+2017,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,1956751,1222972
+2018,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,2822612,1764134
+2019,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,3276020,2047511
+2020,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,2868136,1792583
+2021,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,2160903,1350563
+2022,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,3042574,1901608
+2023,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,3984191,2490118
+2024,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,4449630,2781013
+2025,Advanced Biofuel,5,Renewable Heating Oil (EV 1.6),150,789947,493718
+2025,Advanced Biofuel,5,Renewable Natural Gas - RNG,215,48528,48528
+2010,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,321669248,214443356
+2011,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,1616084361,1077377519
+2012,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,1584666744,1056430771
+2013,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,2301631483,1534402079
+2014,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,2153336326,1435538716
+2015,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,2273251369,1515484489
+2016,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,3291619942,2194392940
+2017,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,3075277399,2050164384
+2018,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,3045430204,2030262144
+2019,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,2847790934,1898503952
+2020,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,3051588188,2034367312
+2021,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,2869651101,1913078061
+2022,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,2790964329,1860623744
+2023,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,3266500358,2177646612
+2024,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,3092164455,2061422323
+2025,Biomass-Based Diesel,4,Biodiesel (EV 1.5),20,372959588,248637142
+2011,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.5),42,210266,140177
+2012,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.5),42,1438924,959282
+2013,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.5),42,754403,502934
+2014,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.5),42,307941,205293
+2010,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,384763,240476
+2011,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,23827395,14892088
+2012,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,14995099,9371937
+2013,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,46259621,28912259
+2014,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,11930103,7456331
+2015,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,6877749,4298593
+2019,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,3800968,2375605
+2020,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,5418525,3386579
+2021,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,30409900,19006187
+2022,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,95661315,59788322
+2023,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,888152155,555095100
+2024,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,839950110,524968819
+2025,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.6),41,176204463,110127790
+2010,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,1222437,719081
+2011,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,51492002,30289409
+2012,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,136233230,80137187
+2013,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,391828924,230487597
+2014,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,544398091,320234128
+2015,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,515669247,303334791
+2016,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,715445969,420850390
+2017,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,770898438,453469386
+2018,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,824864952,485214370
+2019,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,1291129187,759487421
+2020,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,1425851991,838736064
+2021,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,1964814753,1155772960
+2022,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,2874771924,1691041807
+2023,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,3776215347,2221302274
+2024,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,5058251491,2975441159
+2025,Biomass-Based Diesel,4,Non-ester Renewable Diesel (EV 1.7),40,894592589,526230789
+2019,Biomass-Based Diesel,4,Renewable Heating Oil (EV 1.6),150,7704,4815
+2020,Biomass-Based Diesel,4,Renewable Heating Oil (EV 1.6),150,9384,5865
+2021,Biomass-Based Diesel,4,Renewable Heating Oil (EV 1.6),150,632688,395432
+2022,Biomass-Based Diesel,4,Renewable Heating Oil (EV 1.6),150,550200,343875
+2023,Biomass-Based Diesel,4,Renewable Heating Oil (EV 1.6),150,1209481,755926
+2024,Biomass-Based Diesel,4,Renewable Heating Oil (EV 1.6),150,157995,98746
+2016,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.0),140,1160071,1160071
+2016,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,1253834,783646
+2017,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,2737627,1711017
+2018,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,2925086,1828178
+2019,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,3885925,2428702
+2020,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,7373440,4608399
+2021,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,8128118,5080073
+2022,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,25311805,15819877
+2023,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,39159653,24474789
+2024,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,178913906,111821187
+2025,Biomass-Based Diesel,4,Renewable Jet Fuel (EV 1.6),141,65483807,40927377
+2012,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,20069,20069
+2014,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,728509,728509
+2015,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,2181096,2181096
+2016,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,3805246,3805246
+2017,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,10047034,10047034
+2018,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,8158168,8158168
+2019,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,9815841,9815841
+2020,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,2051172,2051172
+2021,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,585099,585099
+2022,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,1396503,1396503
+2023,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,1294545,1294545
+2024,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,43701790,43701790
+2025,Cellulosic Biofuel,3,Cellulosic Ethanol (EV 1.0),60,20253110,20253110
+2013,Cellulosic Biofuel,3,Cellulosic Renewable Gasoline Blendstock (EV application required),171,422740,281819
+2014,Cellulosic Biofuel,3,Cellulosic Renewable Gasoline Blendstock (EV application required),171,44168,29445
+2014,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,15208068,15208068
+2015,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,81490266,81490266
+2016,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,116582508,116582508
+2017,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,157100756,157100756
+2018,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,221510255,221510255
+2019,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,328054595,328054595
+2020,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,412276935,412276935
+2021,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,483723044,483723044
+2022,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,576706405,576706405
+2023,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,687953108,687953108
+2024,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,880780141,880780141
+2025,Cellulosic Biofuel,3,Renewable Compressed Natural Gas,190,1878401,1878401
+2025,Cellulosic Biofuel,3,Renewable Compressed Natural Gas - CNG,195,56258,56258
+2014,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,17379815,17379815
+2015,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,58368879,58368879
+2016,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,71974041,71974041
+2017,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,83476683,83476683
+2018,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,82679775,82679775
+2019,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,76252374,76252374
+2020,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,91544104,91544104
+2021,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,84106011,84106011
+2022,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,90517844,90517844
+2023,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,85488090,85488090
+2024,Cellulosic Biofuel,3,Renewable Liquefied Natural Gas,200,82640449,82640449
+2024,Cellulosic Biofuel,3,Renewable Natural Gas - RNG,215,8586366,8586366
+2025,Cellulosic Biofuel,3,Renewable Natural Gas - RNG,215,152828858,152828858
+2012,Cellulosic Diesel,7,Cellulosic Diesel (EV application required),30,1741,1024
+2013,Cellulosic Diesel,7,Cellulosic Diesel (EV application required),30,395777,232808
+2014,Cellulosic Diesel,7,Cellulosic Diesel (EV application required),30,8859,5211
+2017,Cellulosic Diesel,7,Cellulosic Diesel (EV application required),30,459,270
+2018,Cellulosic Diesel,7,Cellulosic Diesel (EV application required),30,11256,6620
+2014,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,50446,50446
+2015,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,275315,275315
+2016,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,534429,534429
+2017,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,1743435,1743435
+2018,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,2440000,2440000
+2019,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,1315943,1315943
+2020,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,55892,55892
+2021,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,247518,247518
+2022,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,236352,236352
+2023,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,208643,208643
+2024,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,283259,283259
+2025,Cellulosic Diesel,7,Cellulosic Heating Oil (EV application required),100,82937,82937
+2010,Renewable Fuel,6,Biodiesel (EV 1.5),20,18779478,12519647
+2011,Renewable Fuel,6,Biodiesel (EV 1.5),20,6258577,4172383
+2012,Renewable Fuel,6,Biodiesel (EV 1.5),20,1118519,745678
+2013,Renewable Fuel,6,Biodiesel (EV 1.5),20,55168362,36778740
+2014,Renewable Fuel,6,Biodiesel (EV 1.5),20,79776819,53184482
+2015,Renewable Fuel,6,Biodiesel (EV 1.5),20,111679662,74453091
+2016,Renewable Fuel,6,Biodiesel (EV 1.5),20,169323780,112882497
+2018,Renewable Fuel,6,Biodiesel (EV 1.5),20,497892,331927
+2019,Renewable Fuel,6,Biodiesel (EV 1.5),20,16767,11178
+2023,Renewable Fuel,6,Biodiesel (EV 1.5),20,13966250,9310804
+2024,Renewable Fuel,6,Biodiesel (EV 1.5),20,22758501,15172254
+2025,Renewable Fuel,6,Biodiesel (EV 1.5),20,153911,102606
+2013,Renewable Fuel,6,Butanol (EV 1.3),70,15198,11691
+2016,Renewable Fuel,6,Butanol (EV 1.3),70,162942,125340
+2020,Renewable Fuel,6,Butanol (EV 1.3),70,572,440
+2010,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,6777308371,6777308371
+2011,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,13609057120,13609057120
+2012,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,12986723082,12986723082
+2013,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,13098970936,13098970936
+2014,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14021921395,14021921395
+2015,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14393318940,14393318940
+2016,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14724613295,14724613295
+2017,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14864220246,14864220246
+2018,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14967243350,14967243350
+2019,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14730393612,14730393612
+2020,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,12857221546,12857221546
+2021,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14125266752,14125266752
+2022,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14423628685,14423628685
+2023,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14683960517,14683960517
+2024,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,14873977784,14873977784
+2025,Renewable Fuel,6,Non-cellulosic Ethanol (EV 1.0),10,3579758421,3579758421
+2013,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,196357089,115504168
+2014,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,257366277,151391926
+2015,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,340903411,200531415
+2016,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,281617019,165657065
+2017,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,244982236,144107197
+2018,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,181065012,106508829
+2019,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,197800871,116353451
+2020,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,129657171,76268925
+2021,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,134670577,79217986
+2022,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,127436021,74962365
+2023,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,102074856,60044033
+2024,Renewable Fuel,6,Non-ester Renewable Diesel (EV 1.7),40,250191,147171
+2023,Renewable Fuel,6,Renewable Gasoline (EV 1.5),12,35915736,23943821
+2024,Renewable Fuel,6,Renewable Gasoline (EV 1.5),12,3930434,2620288
+2023,Renewable Fuel,6,Renewable Jet Fuel (EV 1.7),11,3103025,1825308
+2024,Renewable Fuel,6,Renewable Jet Fuel (EV 1.7),11,64809,38123
