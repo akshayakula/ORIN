@@ -13,6 +13,9 @@ import {
 } from "../ui";
 import CompanyLookupField from "../CompanyLookupField";
 import CrustdataBadge from "./CrustdataBadge";
+import CompanySuggestionChips from "./CompanySuggestionChips";
+import { buyerSuggestions } from "../../data/demoCompanies";
+import { lookupCompany } from "../../lib/crustdata";
 import { useBuyerProfile } from "../../hooks/useBuyerProfile";
 import type { CrustdataResult } from "../../lib/crustdata";
 
@@ -33,6 +36,8 @@ export function BuyerOnboardingDialog({
   const [result, setResult] = useState<CrustdataResult | null>(null);
   const [typedQuery, setTypedQuery] = useState("");
   const [showStepTwo, setShowStepTwo] = useState(false);
+  const [seedQuery, setSeedQuery] = useState("");
+  const [lookupKey, setLookupKey] = useState(0);
 
   // Reset on close
   useEffect(() => {
@@ -42,8 +47,31 @@ export function BuyerOnboardingDialog({
       setResult(null);
       setTypedQuery("");
       setShowStepTwo(false);
+      setSeedQuery("");
     }
   }, [open]);
+
+  const pickSuggestion = useCallback(
+    async (s: { name: string; domain: string }) => {
+      setSeedQuery(s.name);
+      setLookupKey((k) => k + 1);
+      try {
+        const r = await lookupCompany({ domain: s.domain, name: s.name });
+        setResult(r);
+        setTypedQuery(r.query.name ?? r.query.domain ?? s.name);
+        if (
+          r.status === "found" ||
+          r.status === "enriching" ||
+          r.status === "mock"
+        ) {
+          setShowStepTwo(true);
+        }
+      } catch {
+        /* ignore — user can retry via the field */
+      }
+    },
+    [],
+  );
 
   const handleResolved = useCallback((r: CrustdataResult | null) => {
     setResult(r);
@@ -140,13 +168,21 @@ export function BuyerOnboardingDialog({
           </div>
 
           {/* Step 1 — lookup */}
-          <div>
+          <div className="space-y-3">
             <CompanyLookupField
+              key={lookupKey}
               id="buyer-company-lookup"
               label="Your firm"
               placeholder="e.g. Phillips 66, Marathon, Chevron Renewable Energy"
               hint="Live company signals via Crustdata"
+              initialValue={seedQuery}
               onResolved={handleResolved}
+            />
+
+            <CompanySuggestionChips
+              label="Or pick a sample obligated party"
+              options={buyerSuggestions}
+              onPick={pickSuggestion}
             />
 
             {isMissing && !showStepTwo ? (

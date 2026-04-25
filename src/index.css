@@ -11,12 +11,16 @@
 }
 
 html,
-body,
-#root {
-  height: 100%;
+body {
+  min-height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
+  color: #e6edf3;
+  overflow-x: hidden;
+}
+
+body {
   background:
     radial-gradient(
       1200px 800px at 70% 30%,
@@ -29,8 +33,14 @@ body,
       transparent 60%
     ),
     #02030a;
-  color: #e6edf3;
-  overflow: hidden;
+  background-attachment: fixed;
+}
+
+#root {
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 * {

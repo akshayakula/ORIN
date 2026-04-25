@@ -12,6 +12,7 @@ import {
   FlaskConical,
   FileText,
   Mail,
+  Gavel,
   ShoppingCart,
   ShieldAlert,
   Check,
@@ -46,6 +47,7 @@ interface AuditResultsProps {
   onRequestPurchase: () => void;
   onGenerateAuditPacket: () => void;
   onRequestSellerDocs: () => void;
+  onStartAuction?: (lot: RinLot) => void;
 }
 
 const fadeUp = {
@@ -927,6 +929,7 @@ export default function AuditResults({
   onRequestPurchase,
   onGenerateAuditPacket,
   onRequestSellerDocs,
+  onStartAuction,
 }: AuditResultsProps) {
   const analytics = useMemo(() => buildAnalytics(lot), [lot]);
   const tier = getRiskTier(lot.riskScore);
@@ -989,6 +992,17 @@ export default function AuditResults({
                 <span className="hidden sm:inline">Generate Audit Packet</span>
                 <span className="sm:hidden">Packet</span>
               </button>
+              {onStartAuction && (
+                <button
+                  type="button"
+                  onClick={() => onStartAuction(lot)}
+                  className="btn-ghost"
+                >
+                  <Gavel size={14} strokeWidth={2.25} />
+                  <span className="hidden sm:inline">Start live auction</span>
+                  <span className="sm:hidden">Auction</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={onRequestSellerDocs}

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ShieldCheck, ArrowRight, Activity } from "lucide-react";
+import { ShieldCheck, ArrowRight, Activity, ChevronDown } from "lucide-react";
 import CrustdataBadge from "./CrustdataBadge";
 import { Button } from "../ui";
 import {
@@ -11,7 +11,6 @@ import {
 export interface HeroOverlayProps {
   onGetStarted: () => void;
   onBrowse: () => void;
-  onListRins: () => void;
   stats?: { lots: number; avgRisk: number; coverage: string };
 }
 
@@ -23,7 +22,6 @@ const fadeUp = {
 export function HeroOverlay({
   onGetStarted,
   onBrowse,
-  onListRins,
   stats = { lots: 1248, avgRisk: 18, coverage: "47.3B" },
 }: HeroOverlayProps) {
   return (
@@ -97,14 +95,6 @@ export function HeroOverlay({
             >
               Browse Verified RINs
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={onListRins}
-              className="!rounded-full"
-            >
-              List Your RINs
-            </Button>
           </motion.div>
 
           {/* Stat chips */}
@@ -158,6 +148,21 @@ export function HeroOverlay({
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Scroll-down chevron */}
+      <button
+        type="button"
+        onClick={onBrowse}
+        aria-label="Scroll to marketplace"
+        className="pointer-events-auto absolute bottom-8 left-1/2 -translate-x-1/2 group flex flex-col items-center gap-1.5 text-white/55 hover:text-white transition-colors"
+      >
+        <span className="text-[10px] uppercase tracking-[0.22em] font-mono">
+          Scroll
+        </span>
+        <span className="grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-white/5 backdrop-blur group-hover:border-white/30 group-hover:bg-white/10 animate-bounce">
+          <ChevronDown className="h-4 w-4" aria-hidden />
+        </span>
+      </button>
     </div>
   );
 }

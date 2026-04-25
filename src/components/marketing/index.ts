@@ -18,3 +18,4 @@ export { default as RoleSplash } from "./RoleSplash";
 export { default as MarketplaceSection } from "./MarketplaceSection";
 export { default as CrustdataBadge } from "./CrustdataBadge";
 export { default as BuyerOnboardingDialog } from "./BuyerOnboardingDialog";
+export { default as CompanySuggestionChips } from "./CompanySuggestionChips";

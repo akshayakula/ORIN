@@ -14,9 +14,12 @@ import {
   toast,
 } from "../ui";
 import CompanyLookupField from "../CompanyLookupField";
+import CompanySuggestionChips from "./CompanySuggestionChips";
 import { useSellerListings, type SellerListing } from "../../hooks/useSellerListings";
 import type { DCode, QAPStatus } from "../../types/rin";
 import type { CrustdataResult } from "../../lib/crustdata";
+import { lookupCompany } from "../../lib/crustdata";
+import { sellerSuggestions, type SellerSuggestion } from "../../data/demoCompanies";
 import { cn } from "../../lib/cn";
 
 export interface SellerListingSheetProps {
@@ -107,6 +110,8 @@ export function SellerListingSheet({
   const [submitting, setSubmitting] = useState(false);
   const [enrichment, setEnrichment] = useState<CrustdataResult | null>(null);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [seedQuery, setSeedQuery] = useState("");
+  const [lookupKey, setLookupKey] = useState(0);
 
   // Lat/lng come from the dropped pin OR from Crustdata HQ (as a fallback).
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -125,6 +130,31 @@ export function SellerListingSheet({
     setEnrichment(null);
     setCoords(null);
     setAdvancedOpen(false);
+    setSeedQuery("");
+  };
+
+  const pickSellerSample = async (s: SellerSuggestion) => {
+    // Pre-fill the form with realistic defaults so the user only has to confirm.
+    setForm((f) => ({
+      ...f,
+      company: s.name,
+      city: s.city,
+      facility: s.facility,
+      dCode: s.dCode,
+      quantity: String(s.quantity),
+      vintage: String(s.vintage),
+      price: s.price.toFixed(2),
+      qapProvider: s.qapProvider,
+      qapStatus: s.qapStatus,
+    }));
+    setSeedQuery(s.name);
+    setLookupKey((k) => k + 1);
+    try {
+      const r = await lookupCompany({ domain: s.domain, name: s.name });
+      setEnrichment(r);
+    } catch {
+      /* ignore — user can edit fields manually */
+    }
   };
 
   const suggestedCity = useMemo(
@@ -259,13 +289,22 @@ export function SellerListingSheet({
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* 1 — Company */}
-          <CompanyLookupField
-            id="seller-company"
-            label="Company"
-            hint="We pull live firm details from Crustdata."
-            initialValue={form.company}
-            onResolved={handleCompanyResolved}
-          />
+          <div className="space-y-3">
+            <CompanyLookupField
+              key={lookupKey}
+              id="seller-company"
+              label="Company"
+              hint="We pull live firm details from Crustdata."
+              initialValue={seedQuery || form.company}
+              onResolved={handleCompanyResolved}
+            />
+
+            <CompanySuggestionChips
+              label="Quick-fill from a sample generator"
+              options={sellerSuggestions}
+              onPick={pickSellerSample}
+            />
+          </div>
 
           {/* 2 — Lot essentials */}
           <div className="space-y-3">

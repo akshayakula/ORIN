@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { Menu, X, Plus } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { Button } from "../ui";
 import { AnimatedGradientText } from "../magic";
 import OrinLogo from "../OrinLogo";
+import { AuctionTickerNav } from "../auction";
 
 export interface TopNavProps {
   onBrowse: () => void;
   onOpenContact: () => void;
   onOpenSupport: () => void;
-  onListRins: () => void;
   buyerCompanyName?: string;
+  onOpenAuctions?: () => void;
 }
 
 interface NavLink {
@@ -19,7 +20,7 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { label: "Marketplace", href: "#marketplace" },
+  { label: "Marketplace", href: "#marketplace-list" },
   { label: "How It Works", href: "#how-it-works" },
   { label: "Pricing", href: "#pricing" },
   { label: "FAQ", href: "#faq" },
@@ -29,8 +30,8 @@ export function TopNav({
   onBrowse,
   onOpenContact,
   onOpenSupport,
-  onListRins,
   buyerCompanyName,
+  onOpenAuctions,
 }: TopNavProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -57,7 +58,7 @@ export function TopNav({
       const target = document.querySelector(href);
       if (target) {
         target.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (href === "#marketplace") {
+      } else if (href === "#marketplace-list") {
         onBrowse();
       }
       setMobileOpen(false);
@@ -113,6 +114,7 @@ export function TopNav({
           </nav>
 
           <div className="hidden md:flex items-center gap-2 ml-auto">
+            <AuctionTickerNav onClick={onOpenAuctions} />
             {buyerCompanyName ? (
               <div
                 className="glass-dark inline-flex h-7 items-center gap-2 rounded-full border border-white/15 px-3"
@@ -127,10 +129,6 @@ export function TopNav({
                 </div>
               </div>
             ) : null}
-            <Button variant="ghost" size="sm" onClick={onListRins}>
-              <Plus className="h-3.5 w-3.5" aria-hidden />
-              List Your RINs
-            </Button>
             <Button variant="ghost" size="sm" onClick={onOpenContact}>
               Contact
             </Button>
@@ -173,17 +171,14 @@ export function TopNav({
               ))}
             </nav>
             <div className="mt-6 border-t border-white/10 pt-6 space-y-2">
-              <Button
-                variant="ghost"
-                className="w-full justify-center"
-                onClick={() => {
-                  setMobileOpen(false);
-                  onListRins();
-                }}
-              >
-                <Plus className="h-4 w-4" aria-hidden />
-                List Your RINs
-              </Button>
+              <div className="flex justify-center pb-1">
+                <AuctionTickerNav
+                  onClick={() => {
+                    setMobileOpen(false);
+                    onOpenAuctions?.();
+                  }}
+                />
+              </div>
               <Button
                 variant="ghost"
                 className="w-full justify-center"

@@ -37,6 +37,12 @@ import {
 import { rinLots } from "./data/rinLots";
 import type { RinLot } from "./types/rin";
 import { useSellerListings } from "./hooks/useSellerListings";
+import {
+  LiveAuctionsSheet,
+  StartAuctionDialog,
+  LiveAuctionPanel,
+} from "./components/auction";
+import type { AuctionRecord } from "./types/auction";
 
 type Stage = "globe" | "audit-loading" | "audit-results";
 
@@ -68,6 +74,28 @@ export default function App() {
   // Buyer onboarding
   const [showBuyerOnboarding, setShowBuyerOnboarding] = useState(false);
   const [forceRoleSplash, setForceRoleSplash] = useState(false);
+
+  // Live auctions state
+  const [showAuctionsSheet, setShowAuctionsSheet] = useState(false);
+  const [showStartAuctionDialog, setShowStartAuctionDialog] = useState(false);
+  const [lotForAuction, setLotForAuction] = useState<RinLot | null>(null);
+  const [selectedAuctionId, setSelectedAuctionId] = useState<string | null>(null);
+
+  const handleStartAuction = useCallback((lot: RinLot) => {
+    setLotForAuction(lot);
+    setShowStartAuctionDialog(true);
+  }, []);
+
+  const handleAuctionStarted = useCallback((auction: AuctionRecord) => {
+    setShowStartAuctionDialog(false);
+    setLotForAuction(null);
+    setSelectedAuctionId(auction.auctionId);
+  }, []);
+
+  const handleViewAuction = useCallback((id: string) => {
+    setSelectedAuctionId(id);
+    setShowAuctionsSheet(false);
+  }, []);
 
   const mergedLots = useMemo<RinLot[]>(
     () => [...sellerListings, ...rinLots],
@@ -159,11 +187,11 @@ export default function App() {
   return (
     <div className="relative min-h-screen bg-space-950 text-white">
       <TopNav
-        onBrowse={scrollToMarketplace}
+        onBrowse={scrollToMarketplaceList}
         onOpenContact={() => setShowContactDialog(true)}
         onOpenSupport={() => setShowSupportDialog(true)}
-        onListRins={onListRins}
         buyerCompanyName={buyerProfile?.companyName}
+        onOpenAuctions={() => setShowAuctionsSheet(true)}
       />
 
       {/* Marketplace hero / globe */}
@@ -189,8 +217,7 @@ export default function App() {
           <>
             <HeroOverlay
               onGetStarted={onGetStarted}
-              onBrowse={scrollToMarketplace}
-              onListRins={onListRins}
+              onBrowse={scrollToMarketplaceList}
             />
 
             {hoveredLot && !selectedLot && (
@@ -208,6 +235,7 @@ export default function App() {
                 onClose={() => setSelectedLot(null)}
                 onAudit={() => setStage("audit-loading")}
                 onViewPurchaseInfo={() => setShowPurchaseModal(true)}
+                onStartAuction={handleStartAuction}
               />
             )}
           </>
@@ -241,6 +269,7 @@ export default function App() {
                   description: "Request sent to the seller's compliance desk.",
                 })
               }
+              onStartAuction={handleStartAuction}
             />
           </div>
         )}
@@ -326,6 +355,24 @@ export default function App() {
           setShowBuyerOnboarding(false);
           setTimeout(() => scrollToMarketplaceList(), 200);
         }}
+      />
+
+      <LiveAuctionsSheet
+        open={showAuctionsSheet}
+        onOpenChange={setShowAuctionsSheet}
+        onView={handleViewAuction}
+      />
+
+      <StartAuctionDialog
+        open={showStartAuctionDialog}
+        onOpenChange={setShowStartAuctionDialog}
+        lot={lotForAuction}
+        onStarted={handleAuctionStarted}
+      />
+
+      <LiveAuctionPanel
+        auctionId={selectedAuctionId}
+        onClose={() => setSelectedAuctionId(null)}
       />
 
       <Toaster />
