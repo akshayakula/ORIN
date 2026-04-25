@@ -4,6 +4,7 @@ import {
   Upload,
   ArrowRight,
   Check,
+  X,
 } from "lucide-react";
 import { Particles } from "../magic";
 import { cn } from "../../lib/cn";
@@ -12,9 +13,11 @@ import type { UserRole } from "../../hooks/useUserRole";
 interface RoleSplashProps {
   open: boolean;
   onPick: (role: UserRole) => void;
+  /** When provided, shows a close button so the user can dismiss the splash without picking a role. */
+  onDismiss?: () => void;
 }
 
-export default function RoleSplash({ open, onPick }: RoleSplashProps) {
+export default function RoleSplash({ open, onPick, onDismiss }: RoleSplashProps) {
   return (
     <AnimatePresence>
       {open && (
@@ -29,8 +32,22 @@ export default function RoleSplash({ open, onPick }: RoleSplashProps) {
           role="dialog"
         >
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-space-900/85 backdrop-blur-xl" />
+          <div
+            className="absolute inset-0 bg-space-900/85 backdrop-blur-xl"
+            onClick={onDismiss}
+          />
           <Particles quantity={32} className="absolute inset-0" />
+
+          {onDismiss && (
+            <button
+              type="button"
+              onClick={onDismiss}
+              aria-label="Close"
+              className="absolute top-5 right-5 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/70 hover:text-white hover:bg-white/10 transition"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
 
           <motion.div
             initial={{ y: 18, opacity: 0 }}

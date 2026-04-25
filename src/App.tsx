@@ -67,6 +67,7 @@ export default function App() {
 
   // Buyer onboarding
   const [showBuyerOnboarding, setShowBuyerOnboarding] = useState(false);
+  const [forceRoleSplash, setForceRoleSplash] = useState(false);
 
   const mergedLots = useMemo<RinLot[]>(
     () => [...sellerListings, ...rinLots],
@@ -116,9 +117,14 @@ export default function App() {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
+  const onGetStarted = useCallback(() => {
+    setForceRoleSplash(true);
+  }, []);
+
   const onPickRole = useCallback(
     (next: "buyer" | "seller") => {
       setRole(next);
+      setForceRoleSplash(false);
       if (next === "seller") {
         // brief delay so the splash finishes its exit animation
         setTimeout(() => setShowListingSheet(true), 320);
@@ -182,6 +188,7 @@ export default function App() {
         {stage === "globe" && (
           <>
             <HeroOverlay
+              onGetStarted={onGetStarted}
               onBrowse={scrollToMarketplace}
               onListRins={onListRins}
             />
@@ -306,7 +313,11 @@ export default function App() {
         </DialogContent>
       </Dialog>
 
-      <RoleSplash open={role === null} onPick={onPickRole} />
+      <RoleSplash
+        open={role === null || forceRoleSplash}
+        onPick={onPickRole}
+        onDismiss={forceRoleSplash ? () => setForceRoleSplash(false) : undefined}
+      />
 
       <BuyerOnboardingDialog
         open={showBuyerOnboarding}

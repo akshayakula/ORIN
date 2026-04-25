@@ -9,6 +9,7 @@ import {
 } from "../magic";
 
 export interface HeroOverlayProps {
+  onGetStarted: () => void;
   onBrowse: () => void;
   onListRins: () => void;
   stats?: { lots: number; avgRisk: number; coverage: string };
@@ -20,6 +21,7 @@ const fadeUp = {
 };
 
 export function HeroOverlay({
+  onGetStarted,
   onBrowse,
   onListRins,
   stats = { lots: 1248, avgRisk: 18, coverage: "47.3B" },
@@ -83,10 +85,18 @@ export function HeroOverlay({
             transition={{ duration: 0.55, ease: "easeOut" }}
             className="mt-7 flex flex-wrap items-center gap-3"
           >
-            <ShimmerButton onClick={onBrowse} className="!py-3">
-              Browse Verified RINs
+            <ShimmerButton onClick={onGetStarted} className="!py-3">
+              Get Started
               <ArrowRight className="h-4 w-4" aria-hidden />
             </ShimmerButton>
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={onBrowse}
+              className="!rounded-full"
+            >
+              Browse Verified RINs
+            </Button>
             <Button
               variant="outline"
               size="lg"
