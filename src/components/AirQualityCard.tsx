@@ -86,7 +86,13 @@ export default function AirQualityCard({ lot, className }: AirQualityCardProps) 
         </div>
       )}
 
-      {!loading && !error && data && universal && status && (
+      {!loading && !error && data && data.source === "mock" && (
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/70">
+          Live air quality unavailable for this location.
+        </div>
+      )}
+
+      {!loading && !error && data && data.source === "live" && universal && status && (
         <div className="space-y-4">
           <div className="flex items-end justify-between gap-4 rounded-xl bg-white/5 border border-white/10 p-4">
             <div>

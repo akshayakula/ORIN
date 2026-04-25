@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "../lib/cn";
 import { fmtRins, fmtUSD } from "../lib/format";
 import type { RinLot } from "../types/rin";
-import { getRiskTier } from "../data/rinLots";
+import { getRiskTier } from "../lib/lotStyles";
 
 interface HoverCardProps {
   lot: RinLot;
@@ -42,6 +43,40 @@ function Datum({ label, value, valueClass }: DatumProps) {
   );
 }
 
+function MapPreview({ lat, lng }: { lat: number; lng: number }) {
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as
+    | string
+    | undefined;
+  const [errored, setErrored] = useState(false);
+
+  const url =
+    apiKey && !errored
+      ? `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=14&size=280x140&scale=2&maptype=satellite&markers=color:red%7C${lat},${lng}&key=${apiKey}`
+      : null;
+
+  return (
+    <div className="relative -mx-4 -mt-3 mb-1 h-[140px] w-[calc(100%+2rem)] overflow-hidden rounded-t-2xl border-b border-white/10 bg-gradient-to-br from-cyan-500/20 via-violet-500/15 to-amber-500/15">
+      {url ? (
+        <img
+          src={url}
+          alt="Lot location preview"
+          loading="lazy"
+          className="h-full w-full object-cover"
+          onError={() => setErrored(true)}
+        />
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-mono uppercase tracking-[0.18em] text-white/50">
+          {lat.toFixed(3)}, {lng.toFixed(3)}
+        </div>
+      )}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-space-900/70 via-transparent to-transparent" />
+      <div className="absolute bottom-1.5 right-2 text-[9px] font-mono uppercase tracking-[0.16em] text-white/70">
+        Open 3D inspection →
+      </div>
+    </div>
+  );
+}
+
 export default function HoverCard({ lot, x, y, visible }: HoverCardProps) {
   const tier = getRiskTier(lot.riskScore);
 
@@ -58,9 +93,11 @@ export default function HoverCard({ lot, x, y, visible }: HoverCardProps) {
           style={{ left: x + 16, top: y + 16 }}
         >
           <div
-            className="glass px-4 py-3 flex flex-col gap-2.5"
+            className="glass overflow-hidden px-4 py-3 flex flex-col gap-2.5"
             style={{ width: 280 }}
           >
+            <MapPreview lat={lot.lat} lng={lot.lng} />
+
             <div className="flex items-center justify-between">
               <span className="pill bg-white/10 text-white/90 border border-white/15">
                 {lot.dCode}

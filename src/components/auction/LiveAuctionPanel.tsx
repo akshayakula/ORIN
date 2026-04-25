@@ -4,11 +4,11 @@ import {
   Button,
   Input,
   Label,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   toast,
 } from "../ui";
 import { fmtRins, fmtUSD } from "../../lib/format";
@@ -16,6 +16,8 @@ import { useAuction } from "../../hooks/useAuction";
 import { useBuyerProfile } from "../../hooks/useBuyerProfile";
 import { endAuction, placeBid } from "../../lib/auctions";
 import Countdown from "./Countdown";
+import AuctionWinnerOverlay from "./AuctionWinnerOverlay";
+import AuctionHandoffDialog from "./AuctionHandoffDialog";
 import { cn } from "../../lib/cn";
 
 const BIDDER_KEY = "orin.bidderCompany";
@@ -67,14 +69,18 @@ export function LiveAuctionPanel({ auctionId, onClose }: LiveAuctionPanelProps) 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [bidError, setBidError] = useState<string | null>(null);
 
-  // Track which auction IDs have already triggered a winner toast.
+  // Track which auction IDs have already triggered the winner overlay.
   const winnerNotifiedRef = useRef<Set<string>>(new Set());
+  const [winnerOverlayOpen, setWinnerOverlayOpen] = useState(false);
+  const [handoffOpen, setHandoffOpen] = useState(false);
 
   // Reset state when the auction changes.
   useEffect(() => {
     setBidAmount("");
     setBidError(null);
     setSubmitting(false);
+    setWinnerOverlayOpen(false);
+    setHandoffOpen(false);
   }, [auctionId]);
 
   // Initialize default bid (top + 0.01) when auction loads or top changes.
@@ -112,7 +118,7 @@ export function LiveAuctionPanel({ auctionId, onClose }: LiveAuctionPanelProps) 
     );
   }, [auction, company]);
 
-  // Winner notification.
+  // Winner overlay trigger — fires once per auction id when the auction ends.
   useEffect(() => {
     if (!auction) return;
     const exp = Date.parse(auction.expiresAt);
@@ -122,23 +128,9 @@ export function LiveAuctionPanel({ auctionId, onClose }: LiveAuctionPanelProps) 
       (Number.isFinite(exp) && exp <= Date.now());
     if (!isOver) return;
     if (winnerNotifiedRef.current.has(auction.auctionId)) return;
-    if (
-      auction.winnerCompany &&
-      company.trim() &&
-      auction.winnerCompany.toLowerCase() === company.trim().toLowerCase()
-    ) {
-      toast({
-        title: "You won the auction",
-        description: `${fmtRins(auction.quantity)} ${auction.dCode} RINs at ${fmtUSD(auction.topBid)}/RIN — settle with the seller within 24 hours.`,
-        variant: "success",
-        duration: 8000,
-      });
-      winnerNotifiedRef.current.add(auction.auctionId);
-    } else {
-      // mark as notified regardless to prevent re-firing if user matches later
-      winnerNotifiedRef.current.add(auction.auctionId);
-    }
-  }, [auction?.auctionId, auction?.status, auction?.expiresAt, auction?.winnerCompany, auction?.topBid, auction?.quantity, auction?.dCode, company, auction]);
+    winnerNotifiedRef.current.add(auction.auctionId);
+    setWinnerOverlayOpen(true);
+  }, [auction?.auctionId, auction?.status, auction?.expiresAt, auction]);
 
   async function submitBid(e: React.FormEvent) {
     e.preventDefault();
@@ -191,20 +183,22 @@ export function LiveAuctionPanel({ auctionId, onClose }: LiveAuctionPanelProps) 
   }
 
   return (
-    <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
-      <SheetContent side="right" className="!w-[520px]">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
+    <>
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="!max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
             <Gavel className="h-4 w-4 text-amber-300" aria-hidden />
             Live auction
-          </SheetTitle>
-          <SheetDescription>
+          </DialogTitle>
+          <DialogDescription>
             {auction
               ? `${auction.dCode} · ${fmtRins(auction.quantity)} RINs`
               : "Loading…"}
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
+        <div className="max-h-[80vh] overflow-y-auto pr-1">
         {!auction && (
           <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 text-center text-sm text-white/60">
             {error ? `Error: ${error}` : "Loading auction…"}
@@ -385,8 +379,25 @@ export function LiveAuctionPanel({ auctionId, onClose }: LiveAuctionPanelProps) 
             </p>
           </div>
         )}
-      </SheetContent>
-    </Sheet>
+        </div>
+      </DialogContent>
+    </Dialog>
+    {auction && (
+      <AuctionWinnerOverlay
+        auction={auction}
+        open={winnerOverlayOpen}
+        onContinue={() => {
+          setWinnerOverlayOpen(false);
+          setHandoffOpen(true);
+        }}
+      />
+    )}
+    <AuctionHandoffDialog
+      auction={auction ?? null}
+      open={handoffOpen}
+      onOpenChange={setHandoffOpen}
+    />
+    </>
   );
 }
 

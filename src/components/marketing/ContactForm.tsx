@@ -102,12 +102,11 @@ export function ContactForm({ onSubmitted }: ContactFormProps) {
         />
       </div>
       <div>
-        <Label htmlFor="contact-email">Email *</Label>
+        <Label htmlFor="contact-email">Email <span className="text-white/40 normal-case">(optional)</span></Label>
         <Input
           id="contact-email"
           name="email"
           type="email"
-          required
           value={form.email}
           onChange={(e) => update("email", e.target.value)}
         />

@@ -93,8 +93,7 @@ export function BuyerOnboardingDialog({
 
   const canSubmit =
     name.trim().length > 0 &&
-    email.trim().length > 0 &&
-    /.+@.+\..+/.test(email.trim()) &&
+    (email.trim().length === 0 || /.+@.+\..+/.test(email.trim())) &&
     !!result;
 
   const handleSubmit = useCallback(
@@ -222,14 +221,13 @@ export function BuyerOnboardingDialog({
                     />
                   </div>
                   <div>
-                    <Label htmlFor="buyer-email">Work email *</Label>
+                    <Label htmlFor="buyer-email">Work email <span className="text-white/40 normal-case">(optional)</span></Label>
                     <Input
                       id="buyer-email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       autoComplete="email"
-                      required
                     />
                   </div>
                 </div>

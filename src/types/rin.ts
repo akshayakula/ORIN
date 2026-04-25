@@ -33,33 +33,6 @@ export interface RiskFlag {
   recommendedAction: string;
 }
 
-export interface FirmsDetection {
-  latitude: number;
-  longitude: number;
-  bright_ti4?: number;
-  bright_ti5?: number;
-  scan?: number;
-  track?: number;
-  acq_date: string;
-  acq_time: string;
-  satellite?: string;
-  confidence?: string;
-  frp?: number;
-  daynight?: string;
-}
-
-export interface FirmsResponse {
-  detections: FirmsDetection[];
-  count: number;
-  scanDays: number;
-  bbox: { west: number; south: number; east: number; north: number };
-  status: "no-anomaly" | "low-activity" | "review-recommended";
-  statusLabel: string;
-  source: "live" | "mock";
-  source_sensor?: string;
-  fetchedAt: string;
-}
-
 export interface AnalyticsSnapshot {
   marketPercentile: number;
   riskAdjustedValue: number;

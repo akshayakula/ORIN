@@ -1,7 +1,6 @@
 export * from "./AnimatedGridPattern";
 export * from "./BorderBeam";
 export * from "./NumberTicker";
-export * from "./Marquee";
 export * from "./ShimmerButton";
 export * from "./Particles";
 export * from "./SparklesText";

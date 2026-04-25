@@ -5,11 +5,11 @@ import {
   Button,
   Input,
   Label,
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   Textarea,
   toast,
 } from "../ui";
@@ -21,13 +21,19 @@ import type { CrustdataResult } from "../../lib/crustdata";
 import { lookupCompany } from "../../lib/crustdata";
 import { sellerSuggestions, type SellerSuggestion } from "../../data/demoCompanies";
 import { cn } from "../../lib/cn";
+import { startAuction } from "../../lib/auctions";
+
+export interface SellerListingCreatedMeta {
+  auctionStarted: boolean;
+  auctionId?: string;
+}
 
 export interface SellerListingSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   pin?: { lat: number; lng: number } | null;
   onPickLocation: () => void;
-  onCreated?: (listing: SellerListing) => void;
+  onCreated?: (listing: SellerListing, meta: SellerListingCreatedMeta) => void;
 }
 
 const DCODES: DCode[] = ["D3", "D4", "D5", "D6", "D7"];
@@ -112,6 +118,7 @@ export function SellerListingSheet({
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [seedQuery, setSeedQuery] = useState("");
   const [lookupKey, setLookupKey] = useState(0);
+  const [startAuctionToggle, setStartAuctionToggle] = useState(false);
 
   // Lat/lng come from the dropped pin OR from Crustdata HQ (as a fallback).
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -131,6 +138,7 @@ export function SellerListingSheet({
     setCoords(null);
     setAdvancedOpen(false);
     setSeedQuery("");
+    setStartAuctionToggle(false);
   };
 
   const pickSellerSample = async (s: SellerSuggestion) => {
@@ -185,7 +193,6 @@ export function SellerListingSheet({
     const vintageN = parseInt(form.vintage, 10) || CURRENT_YEAR;
 
     if (
-      !form.email ||
       !form.company ||
       !form.city ||
       !coords ||
@@ -194,7 +201,7 @@ export function SellerListingSheet({
     ) {
       toast({
         title: "A few details still needed",
-        description: "Add company, location, quantity, price, and email.",
+        description: "Add company, location, quantity, and price.",
         variant: "danger",
       });
       return;
@@ -265,7 +272,33 @@ export function SellerListingSheet({
         variant: "success",
       });
 
-      onCreated?.(listing);
+      let auctionId: string | undefined;
+      if (startAuctionToggle) {
+        try {
+          const auction = await startAuction({
+            lot: listing,
+            startedByCompany: form.company,
+          });
+          auctionId = auction.auctionId;
+          toast({
+            title: "Auction live — buyers can bid now",
+            description: "Your 5-minute live auction is open.",
+            variant: "success",
+          });
+        } catch (err) {
+          console.warn("[SellerListingSheet] startAuction failed", err);
+          toast({
+            title: "Listing published — auction failed to start",
+            description: (err as Error)?.message ?? "Try again from the Auctions panel.",
+            variant: "danger",
+          });
+        }
+      }
+
+      onCreated?.(listing, {
+        auctionStarted: !!auctionId,
+        auctionId,
+      });
       onOpenChange(false);
       reset();
     } finally {
@@ -278,16 +311,19 @@ export function SellerListingSheet({
     : null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="!w-[520px] !max-w-[95vw]">
-        <SheetHeader>
-          <SheetTitle>List a RIN lot</SheetTitle>
-          <SheetDescription>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="!max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>List a RIN lot</DialogTitle>
+          <DialogDescription>
             Three things and you're listed. Everything else is optional.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6 max-h-[80vh] overflow-y-auto pr-1"
+        >
           {/* 1 — Company */}
           <div className="space-y-3">
             <CompanyLookupField
@@ -407,16 +443,17 @@ export function SellerListingSheet({
             </div>
           </div>
 
-          {/* 4 — Email */}
+          {/* 4 — Email (optional) */}
           <div>
-            <Label htmlFor="seller-email">Email</Label>
+            <Label htmlFor="seller-email">
+              Email <span className="text-white/40 normal-case">(optional)</span>
+            </Label>
             <Input
               id="seller-email"
               type="email"
               placeholder="you@firm.com"
               value={form.email}
               onChange={(e) => update("email", e.target.value)}
-              required
             />
           </div>
 
@@ -519,6 +556,56 @@ export function SellerListingSheet({
           </div>
 
           <div className="space-y-3">
+            <button
+              type="button"
+              onClick={() => setStartAuctionToggle((v) => !v)}
+              aria-pressed={startAuctionToggle}
+              className={cn(
+                "w-full rounded-xl border px-4 py-3 text-left transition flex items-start gap-3",
+                startAuctionToggle
+                  ? "bg-amber-500/10 border-amber-500/40"
+                  : "bg-white/5 border-white/10 hover:bg-white/10",
+              )}
+            >
+              <span
+                className={cn(
+                  "mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded border transition",
+                  startAuctionToggle
+                    ? "bg-amber-400 border-amber-400 text-space-950"
+                    : "bg-transparent border-white/30",
+                )}
+              >
+                {startAuctionToggle ? (
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    className="h-3 w-3"
+                    aria-hidden
+                  >
+                    <path
+                      d="M3 8.5l3 3 7-7"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ) : null}
+              </span>
+              <span className="flex flex-col gap-0.5">
+                <span
+                  className={cn(
+                    "text-sm font-medium",
+                    startAuctionToggle ? "text-amber-200" : "text-white/90",
+                  )}
+                >
+                  Start a 5-minute live auction immediately
+                </span>
+                <span className="text-[11px] leading-relaxed text-white/55">
+                  Buyers will see your lot in the header and can place bids using their company name.
+                </span>
+              </span>
+            </button>
             <Button
               type="submit"
               variant="primary"
@@ -536,14 +623,15 @@ export function SellerListingSheet({
               )}
             </Button>
             <p className="text-[10px] text-white/40 leading-relaxed">
-              ORIN does not certify EPA validity and does not process EMTS
-              transfers. Your listing will be subject to an ORIN Integrity Audit
-              before buyers can purchase.
+              ORIN flags diligence risk before purchase. ORIN does not accuse
+              sellers of fraud and does not certify EPA validity. Your listing
+              will be subject to an ORIN Integrity Audit before buyers can
+              purchase.
             </p>
           </div>
         </form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }
 

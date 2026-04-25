@@ -103,12 +103,11 @@ export function SupportForm({ onSubmitted }: SupportFormProps) {
         />
       </div>
       <div>
-        <Label htmlFor="support-email">Email *</Label>
+        <Label htmlFor="support-email">Email <span className="text-white/40 normal-case">(optional)</span></Label>
         <Input
           id="support-email"
           name="email"
           type="email"
-          required
           value={form.email}
           onChange={(e) => update("email", e.target.value)}
         />

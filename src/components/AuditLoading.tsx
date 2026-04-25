@@ -10,16 +10,12 @@ interface AuditLoadingProps {
 }
 
 const STEPS = [
-  "Checking QAP provider",
-  "Matching seller and facility identity",
-  "Scanning satellite methane signals",
-  "Checking NASA thermal / flare anomalies",
-  "Sampling ambient air quality",
-  "Reviewing production plausibility",
-  "Generating diligence packet",
+  "Pulling Google Air Quality readings",
+  "Loading Google Photorealistic 3D",
+  "Cross-referencing EPA RFS data",
 ] as const;
 
-const STEP_DURATION = 300; // ms per step transition
+const STEP_DURATION = 525; // ms per step transition
 const INITIAL_DELAY = 120; // ms before first step goes running
 const FINAL_HOLD = 220; // ms after last step completes before onComplete
 
@@ -251,8 +247,8 @@ export default function AuditLoading({ lot, onComplete }: AuditLoadingProps) {
           </div>
 
           <p className="text-[10px] leading-relaxed text-white/40 text-center">
-            ORIN does not accuse sellers of fraud. ORIN flags diligence risk
-            before purchase.
+            ORIN flags diligence risk before purchase. ORIN does not accuse
+            sellers of fraud and does not certify EPA validity.
           </p>
         </div>
       </motion.div>

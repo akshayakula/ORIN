@@ -163,8 +163,8 @@ export function PricingSection() {
         </div>
 
         <p className="mt-10 text-center text-xs text-white/40">
-          All plans include the ORIN Integrity Audit baseline. No EMTS transfer
-          fees collected by ORIN.
+          All plans include the ORIN Integrity Audit baseline. EMTS filing
+          handled by ORIN as a managed service.
         </p>
       </div>
     </section>

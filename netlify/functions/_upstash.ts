@@ -1,5 +1,7 @@
 // Tiny Upstash Redis REST helper. Native fetch only — no SDK install.
 // Never logs the token.
+//
+// Both local dev and production read the same Upstash instance via these env vars.
 
 export interface UpstashResult<T = unknown> {
   result: T;
@@ -8,54 +10,9 @@ export interface UpstashResult<T = unknown> {
 
 const TIMEOUT_MS = 7000;
 
-let dotenvCache: { url?: string; token?: string } | null = null;
-
-function readDotenv(): { url?: string; token?: string } {
-  if (dotenvCache) return dotenvCache;
-  dotenvCache = {};
-  try {
-    // Lazy require so this never breaks in environments without fs (it always
-    // exists in Netlify Node functions, but we stay defensive).
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const fs = require("fs") as typeof import("fs");
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const path = require("path") as typeof import("path");
-    const candidates = [
-      path.resolve(process.cwd(), ".env"),
-      path.resolve(process.cwd(), "../.env"),
-      path.resolve(process.cwd(), "../../.env"),
-    ];
-    for (const p of candidates) {
-      if (!fs.existsSync(p)) continue;
-      const text = fs.readFileSync(p, "utf8");
-      for (const line of text.split(/\r?\n/)) {
-        const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/.exec(line);
-        if (!m) continue;
-        const k = m[1];
-        let v = m[2];
-        if (
-          (v.startsWith('"') && v.endsWith('"')) ||
-          (v.startsWith("'") && v.endsWith("'"))
-        ) {
-          v = v.slice(1, -1);
-        }
-        if (k === "UPSTASH_REDIS_REST_URL" && !dotenvCache.url) dotenvCache.url = v;
-        if (k === "UPSTASH_REDIS_REST_TOKEN" && !dotenvCache.token) dotenvCache.token = v;
-      }
-      if (dotenvCache.url || dotenvCache.token) break;
-    }
-  } catch {
-    /* ignore */
-  }
-  return dotenvCache;
-}
-
 function getCreds(): { url: string; token: string } | null {
-  // Prefer values from project's .env file (if present) — Netlify dev can
-  // pull stale linked-site env that points to a dead Upstash host.
-  const dotenv = readDotenv();
-  const url = dotenv.url || process.env.UPSTASH_REDIS_REST_URL;
-  const token = dotenv.token || process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return null;
   let normalized = url.trim().replace(/\/+$/, "");
   if (!/^https?:\/\//i.test(normalized)) {

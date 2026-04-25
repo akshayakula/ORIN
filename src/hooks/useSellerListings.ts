@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   DCode,
   ORINGrade,
@@ -20,6 +20,8 @@ export type SellerListing = RinLot & {
 };
 
 const STORAGE_KEY = "orin.sellerListings";
+const ENDPOINT = "/.netlify/functions/listings";
+const REFRESH_MS = 30_000;
 
 type AddInput = Omit<
   SellerListing,
@@ -79,7 +81,6 @@ function computeRiskScore(
   if (price < 0.5) score += 8;
   else if (price < 0.7) score += 3;
   if (price > 3) score -= 2;
-  // small deterministic variance based on quantity last digits
   const variance = ((quantity % 11) - 5);
   score += variance;
   return Math.max(5, Math.min(95, Math.round(score)));
@@ -93,9 +94,103 @@ function gradeFromRisk(risk: number): ORINGrade {
   return "C";
 }
 
+function sortByCreatedDesc(list: SellerListing[]): SellerListing[] {
+  return list.slice().sort((a, b) => {
+    const ta = Date.parse(a.createdAt) || 0;
+    const tb = Date.parse(b.createdAt) || 0;
+    return tb - ta;
+  });
+}
+
 export function useSellerListings() {
   const [listings, setListings] = useState<SellerListing[]>(() => safeRead());
+  const [loading, setLoading] = useState<boolean>(true);
+  const inflightRef = useRef<AbortController | null>(null);
+  const attemptedSeedRef = useRef(false);
 
+  const fetchOnce = useCallback(async () => {
+    inflightRef.current?.abort();
+    const ctrl = new AbortController();
+    inflightRef.current = ctrl;
+    try {
+      const res = await fetch(ENDPOINT, { signal: ctrl.signal });
+      if (!res.ok) return;
+      const data = (await res.json()) as {
+        listings?: SellerListing[];
+        source?: string;
+      };
+      if (!Array.isArray(data.listings)) return;
+      // If server reports no-upstash (no persistence), keep local state
+      if (data.source === "no-upstash" && data.listings.length === 0) {
+        return;
+      }
+      const merged = sortByCreatedDesc(data.listings);
+      setListings(merged);
+      safeWrite(merged);
+      // Bootstrap fresh Upstash environments by seeding demo lots once.
+      if (merged.length === 0 && !attemptedSeedRef.current) {
+        attemptedSeedRef.current = true;
+        try {
+          const seedRes = await fetch(`${ENDPOINT}/seed`, { method: "POST" });
+          if (seedRes.ok) {
+            const after = await fetch(ENDPOINT);
+            if (after.ok) {
+              const afterData = (await after.json()) as {
+                listings?: SellerListing[];
+              };
+              if (Array.isArray(afterData.listings)) {
+                const sorted = sortByCreatedDesc(afterData.listings);
+                setListings(sorted);
+                safeWrite(sorted);
+              }
+            }
+          }
+        } catch {
+          /* best-effort seed */
+        }
+      }
+    } catch (err) {
+      if ((err as Error)?.name === "AbortError") return;
+      // Network failure — keep local
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Mount + visibility-aware polling
+  useEffect(() => {
+    let active = true;
+    let timer: ReturnType<typeof setInterval> | null = null;
+
+    const tick = () => {
+      if (!active) return;
+      if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
+      void fetchOnce();
+    };
+
+    void fetchOnce();
+    timer = setInterval(tick, REFRESH_MS);
+
+    const onVis = () => {
+      if (typeof document !== "undefined" && document.visibilityState === "visible") {
+        void fetchOnce();
+      }
+    };
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", onVis);
+    }
+
+    return () => {
+      active = false;
+      if (timer) clearInterval(timer);
+      if (typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", onVis);
+      }
+      inflightRef.current?.abort();
+    };
+  }, [fetchOnce]);
+
+  // Cross-tab sync
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onStorage = (e: StorageEvent) => {
@@ -106,7 +201,7 @@ export function useSellerListings() {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const persist = useCallback((next: SellerListing[]) => {
+  const persistLocal = useCallback((next: SellerListing[]) => {
     setListings(next);
     safeWrite(next);
   }, []);
@@ -151,24 +246,65 @@ export function useSellerListings() {
         companyEnrichedAt: input.companyEnrichedAt,
         sellerVerifiedByCrustdata: input.sellerVerifiedByCrustdata,
       };
-      persist([next, ...listings]);
+      // Optimistic local
+      setListings((prev) => {
+        const merged = [next, ...prev.filter((p) => p.id !== next.id)];
+        safeWrite(merged);
+        return merged;
+      });
+      // Fire-and-forget POST
+      void (async () => {
+        try {
+          const res = await fetch(ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(next),
+          });
+          if (!res.ok) {
+            console.warn(
+              "[useSellerListings] POST failed",
+              res.status,
+              await res.text().catch(() => ""),
+            );
+          }
+        } catch (err) {
+          console.warn("[useSellerListings] POST error", err);
+        }
+      })();
       return next;
     },
-    [listings, persist],
+    [],
   );
 
   const remove = useCallback(
     (id: string) => {
-      persist(listings.filter((l) => l.id !== id));
+      setListings((prev) => {
+        const filtered = prev.filter((l) => l.id !== id);
+        safeWrite(filtered);
+        return filtered;
+      });
+      void (async () => {
+        try {
+          await fetch(`${ENDPOINT}/${encodeURIComponent(id)}`, {
+            method: "DELETE",
+          });
+        } catch {
+          /* best-effort */
+        }
+      })();
     },
-    [listings, persist],
+    [],
   );
 
   const clear = useCallback(() => {
-    persist([]);
-  }, [persist]);
+    persistLocal([]);
+  }, [persistLocal]);
 
-  return { listings, add, remove, clear };
+  const refresh = useCallback(async () => {
+    await fetchOnce();
+  }, [fetchOnce]);
+
+  return { listings, add, remove, clear, refresh, loading };
 }
 
 export default useSellerListings;

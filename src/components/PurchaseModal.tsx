@@ -87,9 +87,9 @@ export default function PurchaseModal({
             </div>
 
             <p className="text-[11px] leading-relaxed text-white/50 text-center">
-              ORIN flags diligence risk before purchase. ORIN is a
-              marketplace experience and does not process EMTS transfers,
-              payments, or EPA validation. Verify origin before purchase.
+              ORIN flags diligence risk before purchase. ORIN does not accuse
+              sellers of fraud and does not certify EPA validity. Verify origin
+              before purchase.
             </p>
 
             <div className="w-full flex flex-col gap-2.5 pt-1">

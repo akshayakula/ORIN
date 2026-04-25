@@ -109,9 +109,8 @@ export default function RoleSplash({ open, onPick, onDismiss }: RoleSplashProps)
             </div>
 
             <div className="mt-8 text-center text-[11px] text-white/40">
-              ORIN flags diligence risk before purchase. ORIN does not accuse sellers
-              of fraud, does not certify EPA validity, and does not process EMTS
-              transfers.
+              ORIN flags diligence risk before purchase. ORIN does not accuse
+              sellers of fraud and does not certify EPA validity.
             </div>
           </motion.div>
         </motion.div>

@@ -1,4 +1,13 @@
+import { useEffect, useState } from "react";
 import { NumberTicker, Particles } from "../magic";
+import { totals2026, dCode2026Aggregates } from "../../data/epaContext";
+import { useSellerListings } from "../../hooks/useSellerListings";
+import { useLiveAuctions } from "../../hooks/useLiveAuctions";
+
+// Real numbers, no synthetic deltas. Pulled from:
+//   - EPA RFS public reports (epaContext) for 2026 RIN totals
+//   - Upstash-backed listings catalog for live lot count
+//   - Live auctions hook for active-auction count
 
 interface StatTile {
   label: string;
@@ -6,37 +15,46 @@ interface StatTile {
   suffix?: string;
   prefix?: string;
   decimals?: number;
-  delta: string;
+  source: string;
 }
 
-const tiles: StatTile[] = [
-  {
-    label: "Verified RIN Lots",
-    value: 1248,
-    suffix: "+",
-    delta: "+12.8% MoM",
-  },
-  {
-    label: "Total Volume Tracked",
-    value: 47.3,
-    suffix: "B RINs",
-    decimals: 1,
-    delta: "+8.4% MoM",
-  },
-  {
-    label: "QAP Cross-Checks",
-    value: 9800,
-    suffix: "+",
-    delta: "+22.1% MoM",
-  },
-  {
-    label: "Satellite Scans",
-    value: 312000,
-    delta: "+34.5% MoM",
-  },
-];
-
 export function StatsSection() {
+  const { listings } = useSellerListings();
+  const { auctions } = useLiveAuctions();
+  const [tiles, setTiles] = useState<StatTile[]>([]);
+
+  useEffect(() => {
+    const generatedB = totals2026.generated / 1_000_000_000;
+    const availableB = totals2026.available / 1_000_000_000;
+    const dCodes = dCode2026Aggregates.length;
+    setTiles([
+      {
+        label: "Verified RIN Lots",
+        value: listings.length,
+        source: "Live · Upstash",
+      },
+      {
+        label: "RINs Generated · 2026",
+        value: generatedB,
+        suffix: "B",
+        decimals: 2,
+        source: "EPA RFS Mar 2026",
+      },
+      {
+        label: "RINs Available · 2026",
+        value: availableB,
+        suffix: "B",
+        decimals: 2,
+        source: "EPA RFS Mar 2026",
+      },
+      {
+        label: "Live Auctions",
+        value: auctions.length,
+        source: dCodes ? "Live · Upstash" : "—",
+      },
+    ]);
+  }, [listings.length, auctions.length]);
+
   return (
     <section
       id="impact"
@@ -49,8 +67,12 @@ export function StatsSection() {
         <div className="mx-auto max-w-3xl text-center">
           <p className="eyebrow">ORIN BY THE NUMBERS</p>
           <h2 className="mt-3 text-3xl md:text-5xl font-bold tracking-[-0.01em] text-white">
-            Audit-first RIN trading at scale.
+            Real-time numbers from real public data.
           </h2>
+          <p className="mt-3 text-sm text-white/55">
+            Lot counts come from our Upstash-backed marketplace. RIN totals come
+            from public EPA RFS reports.
+          </p>
         </div>
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -78,8 +100,8 @@ export function StatsSection() {
                 )}
               </div>
 
-              <p className="mt-3 text-[11px] font-mono tracking-wider text-white/40">
-                {tile.delta}
+              <p className="mt-3 text-[10px] font-mono uppercase tracking-[0.18em] text-white/35">
+                {tile.source}
               </p>
 
               <div className="mt-4 h-px w-full bg-white/8" />

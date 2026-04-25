@@ -24,7 +24,6 @@ export const handler: Handler = async (event) => {
     time: new Date().toISOString(),
     version: "0.1.0",
     env: {
-      firms: Boolean(process.env.NASA_FIRMS_MAP_KEY),
       demo: process.env.VITE_DEMO_MODE === "true",
     },
   };

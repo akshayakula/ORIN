@@ -35,8 +35,8 @@ export function CTASection({ onBrowse }: CTASectionProps) {
             </Button>
           </div>
           <p className="mt-6 text-[11px] text-white/45">
-            ORIN does not accuse sellers of fraud. ORIN does not certify EPA
-            validity. ORIN does not process EMTS transfers.
+            ORIN flags diligence risk before purchase. ORIN does not accuse
+            sellers of fraud and does not certify EPA validity.
           </p>
         </div>
       </div>

@@ -1,10 +1,10 @@
 import { Radio } from "lucide-react";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from "../ui";
 import { fmtRins, fmtUSD } from "../../lib/format";
 import { useLiveAuctions } from "../../hooks/useLiveAuctions";
@@ -24,18 +24,19 @@ export function LiveAuctionsSheet({
   const { auctions, loading } = useLiveAuctions();
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="!w-[460px]">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="!max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
             <Radio className="h-4 w-4 text-red-300" aria-hidden />
             Live auctions
-          </SheetTitle>
-          <SheetDescription>
+          </DialogTitle>
+          <DialogDescription>
             Auctions run for 5 minutes. Click View to place a bid.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
+        <div className="max-h-[80vh] overflow-y-auto pr-1">
         {auctions.length === 0 && (
           <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 text-center text-sm text-white/60">
             {loading ? "Loading…" : "No live auctions right now."}
@@ -99,8 +100,9 @@ export function LiveAuctionsSheet({
         <p className="mt-6 text-[10px] leading-relaxed text-white/40">
           ORIN flags diligence risk before purchase. ORIN does not accuse sellers of fraud.
         </p>
-      </SheetContent>
-    </Sheet>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

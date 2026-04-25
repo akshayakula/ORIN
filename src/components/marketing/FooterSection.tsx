@@ -88,9 +88,9 @@ export function FooterSection() {
             reserved.
           </p>
           <p className="text-[11px] text-white/40 max-w-3xl">
-            ORIN does not accuse sellers of fraud. ORIN does not certify EPA
-            validity. ORIN does not process EMTS transfers. Satellite signals
-            are informational and are not legal evidence.
+            ORIN flags diligence risk before purchase. ORIN does not accuse
+            sellers of fraud and does not certify EPA validity. Satellite
+            signals are informational and are not legal evidence.
           </p>
         </div>
       </div>

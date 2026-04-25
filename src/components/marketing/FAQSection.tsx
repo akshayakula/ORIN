@@ -13,7 +13,7 @@ interface Faq {
 const faqs: Faq[] = [
   {
     q: "Does ORIN process the EMTS transfer?",
-    a: "No. ORIN is a pre-purchase marketplace and diligence platform. EMTS transfers are handled by the buyer and seller through their registered EPA accounts.",
+    a: "Yes — ORIN handles the EMTS filing, settlement docs, and party notifications as a managed service. Buyers and sellers do not need to log into EMTS for an ORIN-mediated transfer.",
   },
   {
     q: "Does ORIN certify a RIN's EPA validity?",
@@ -25,7 +25,7 @@ const faqs: Faq[] = [
   },
   {
     q: "Which satellite sources does ORIN use?",
-    a: "NASA FIRMS VIIRS NRT thermal / flare scans, and commercial methane datasets where available. Results are informational, not legal evidence.",
+    a: "Google Air Quality readings, Google Photorealistic 3D imagery, and commercial methane datasets where available. Results are informational, not legal evidence.",
   },
   {
     q: "Is my diligence packet shareable?",

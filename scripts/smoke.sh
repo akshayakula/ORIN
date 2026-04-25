@@ -28,25 +28,9 @@ echo "== health =="
 run "health happy path" 200 "$BASE$PREFIX/health"
 run "health CORS preflight" 204 -X OPTIONS "$BASE$PREFIX/health"
 
-echo "== firms =="
-run "firms happy path Houston" 200 "$BASE$PREFIX/firms?lat=29.7604&lng=-95.3698&days=3&sensor=VIIRS_NOAA20_NRT"
-run "firms happy path Denver 5d" 200 "$BASE$PREFIX/firms?lat=39.7392&lng=-104.9903&days=5&sensor=VIIRS_SNPP_NRT"
-run "firms SF 1d empty" 200 "$BASE$PREFIX/firms?lat=37.7749&lng=-122.4194&days=1"
-run "firms MODIS Minneapolis" 200 "$BASE$PREFIX/firms?lat=44.9778&lng=-93.2650&days=5&sensor=MODIS_NRT"
-run "firms missing params" 400 "$BASE$PREFIX/firms"
-run "firms out-of-range lat" 400 "$BASE$PREFIX/firms?lat=99&lng=-200"
-run "firms days too high" 400 "$BASE$PREFIX/firms?lat=29.7&lng=-95.3&days=99"
-run "firms unknown sensor silently normalized" 200 "$BASE$PREFIX/firms?lat=29.7&lng=-95.3&days=3&sensor=GARBAGE"
-run "firms CORS preflight" 204 -X OPTIONS "$BASE$PREFIX/firms"
-
-echo "== listings (not implemented yet) =="
+echo "== listings =="
 run "listings GET" 200 "$BASE$PREFIX/listings"
-run "listings by id" 200 "$BASE$PREFIX/listings?id=RIN-001"
-
-echo "== audit (not implemented yet) =="
-run "audit POST" 200 -X POST -H "Content-Type: application/json" \
-  --data '{"lat":29.7604,"lng":-95.3698,"rinId":"RIN-001","days":3}' \
-  "$BASE$PREFIX/audit"
+run "listings seed (idempotent)" 200 -X POST "$BASE$PREFIX/listings/seed"
 
 echo
 echo "Results: $PASS pass / $FAIL fail"

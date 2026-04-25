@@ -30,7 +30,7 @@ const features: Feature[] = [
   {
     title: "Satellite Intelligence",
     description:
-      "NASA FIRMS thermal checks + methane mismatch analysis for high-risk D3 RNG.",
+      "Satellite signal analysis and methane mismatch checks for high-risk D3 RNG.",
     icon: Satellite,
     color: "#94a3b8",
     glow: "shadow-glowCyan",

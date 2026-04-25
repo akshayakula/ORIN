@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import type { RinLot } from "../../types/rin";
 import type { SellerListing } from "../../hooks/useSellerListings";
-import { getRiskTier } from "../../data/rinLots";
+import { getRiskTier } from "../../lib/lotStyles";
 import { referencePrices } from "../../data/epaContext";
 import { fmtRins, fmtUSD, fmtUSDCompact } from "../../lib/format";
 import { cn } from "../../lib/cn";
@@ -27,6 +27,7 @@ interface MarketplaceSectionProps {
 type DFilter = "all" | "D3" | "D4" | "D5" | "D6" | "D7";
 type RiskFilter = "all" | "low" | "medium" | "high";
 type SortKey =
+  | "newest"
   | "risk-asc"
   | "risk-desc"
   | "price-asc"
@@ -79,7 +80,7 @@ export default function MarketplaceSection({
   const [dFilter, setDFilter] = useState<DFilter>("all");
   const [riskFilter, setRiskFilter] = useState<RiskFilter>("all");
   const [qapVerifiedOnly, setQapVerifiedOnly] = useState(false);
-  const [sortKey, setSortKey] = useState<SortKey>("risk-asc");
+  const [sortKey, setSortKey] = useState<SortKey>("newest");
   const [priceCap, setPriceCap] = useState<number>(1.5);
 
   const filtered = useMemo(() => {
@@ -103,6 +104,16 @@ export default function MarketplaceSection({
 
     const sorted = out.slice();
     switch (sortKey) {
+      case "newest":
+        sorted.sort((a, b) => {
+          const ta = Date.parse((a as { createdAt?: string }).createdAt ?? "") || 0;
+          const tb = Date.parse((b as { createdAt?: string }).createdAt ?? "") || 0;
+          if (ta && tb) return tb - ta;
+          if (tb && !ta) return 1;
+          if (ta && !tb) return -1;
+          return a.id.localeCompare(b.id);
+        });
+        break;
       case "risk-asc":
         sorted.sort((a, b) => a.riskScore - b.riskScore);
         break;
@@ -170,8 +181,10 @@ export default function MarketplaceSection({
               Browse verified RIN lots
             </h2>
             <p className="text-white/60 max-w-2xl">
+              {sortKey === "newest" ? "Most recent " : ""}
               {filtered.length} lot{filtered.length === 1 ? "" : "s"} ·{" "}
-              {fmtUSDCompact(totalValue)} tracked value · avg ORIN risk {avgRisk}
+              {fmtUSDCompact(totalValue)} tracked value
+              {sortKey !== "newest" ? ` · avg ORIN risk ${avgRisk}` : ""}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -369,6 +382,7 @@ function SortButton({
   setSortKey: (k: SortKey) => void;
 }) {
   const options: { key: SortKey; label: string }[] = [
+    { key: "newest", label: "Most recent" },
     { key: "risk-asc", label: "Risk (low → high)" },
     { key: "risk-desc", label: "Risk (high → low)" },
     { key: "price-asc", label: "Price (low → high)" },
@@ -509,7 +523,7 @@ function LotCard({ lot, index, onSelect, onAudit }: LotCardProps) {
             className="flex-1"
             onClick={onSelect}
           >
-            Details
+            View on globe
           </Button>
         </div>
       </div>

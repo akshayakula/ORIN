@@ -4,7 +4,7 @@ import { cn } from "../lib/cn";
 import { fmtRins, fmtUSD, fmtUSDCompact } from "../lib/format";
 import type { RinLot } from "../types/rin";
 import type { SellerListing } from "../hooks/useSellerListings";
-import { getRiskTier } from "../data/rinLots";
+import { getRiskTier } from "../lib/lotStyles";
 import RiskBadge from "./RiskBadge";
 
 interface SelectedLotPanelProps {
@@ -13,7 +13,6 @@ interface SelectedLotPanelProps {
   onAudit: () => void;
   onViewPurchaseInfo: () => void;
   onAddToCompare?: (lot: RinLot) => void;
-  onStartAuction?: (lot: RinLot) => void;
 }
 
 const tierText = {
@@ -103,7 +102,6 @@ export default function SelectedLotPanel({
   onAudit,
   onViewPurchaseInfo,
   onAddToCompare,
-  onStartAuction,
 }: SelectedLotPanelProps) {
   return (
     <AnimatePresence>
@@ -122,7 +120,6 @@ export default function SelectedLotPanel({
             onAudit={onAudit}
             onViewPurchaseInfo={onViewPurchaseInfo}
             onAddToCompare={onAddToCompare}
-            onStartAuction={onStartAuction}
           />
         </motion.aside>
       )}
@@ -136,7 +133,6 @@ interface PanelBodyProps {
   onAudit: () => void;
   onViewPurchaseInfo: () => void;
   onAddToCompare?: (lot: RinLot) => void;
-  onStartAuction?: (lot: RinLot) => void;
 }
 
 function PanelBody({
@@ -145,7 +141,6 @@ function PanelBody({
   onAudit,
   onViewPurchaseInfo,
   onAddToCompare,
-  onStartAuction,
 }: PanelBodyProps) {
   const tier = getRiskTier(lot.riskScore);
   const estimatedTotal = lot.quantity * lot.price;
@@ -348,15 +343,6 @@ function PanelBody({
         >
           View Purchase Info
         </button>
-        {onStartAuction && (
-          <button
-            type="button"
-            onClick={() => onStartAuction(lot)}
-            className="btn-ghost justify-center w-full"
-          >
-            Start live auction
-          </button>
-        )}
         {onAddToCompare && (
           <button
             type="button"

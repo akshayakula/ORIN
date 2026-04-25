@@ -5,7 +5,6 @@ export * from "./FeaturesSection";
 export * from "./HowItWorksSection";
 export * from "./StatsSection";
 export * from "./TestimonialsSection";
-export * from "./TrustedByMarquee";
 export * from "./PricingSection";
 export * from "./FAQSection";
 export * from "./ContactForm";

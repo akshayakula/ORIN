@@ -10,7 +10,6 @@ import {
   HeroOverlay,
   FeaturesSection,
   StatsSection,
-  TrustedByMarquee,
   PricingSection,
   FAQSection,
   CTASection,
@@ -34,22 +33,19 @@ import {
   Toaster,
   toast,
 } from "./components/ui";
-import { rinLots } from "./data/rinLots";
 import type { RinLot } from "./types/rin";
 import { useSellerListings } from "./hooks/useSellerListings";
 import {
   LiveAuctionsSheet,
-  StartAuctionDialog,
   LiveAuctionPanel,
 } from "./components/auction";
-import type { AuctionRecord } from "./types/auction";
 
 type Stage = "globe" | "audit-loading" | "audit-results";
 
 export default function App() {
   const { listings: sellerListings } = useSellerListings();
   const { role, setRole } = useUserRole();
-  const { profile: buyerProfile } = useBuyerProfile();
+  const { profile: buyerProfile, clear: clearBuyerProfile } = useBuyerProfile();
 
   const [selectedLot, setSelectedLot] = useState<RinLot | null>(null);
   const [hoveredLot, setHoveredLot] = useState<RinLot | null>(null);
@@ -77,20 +73,7 @@ export default function App() {
 
   // Live auctions state
   const [showAuctionsSheet, setShowAuctionsSheet] = useState(false);
-  const [showStartAuctionDialog, setShowStartAuctionDialog] = useState(false);
-  const [lotForAuction, setLotForAuction] = useState<RinLot | null>(null);
   const [selectedAuctionId, setSelectedAuctionId] = useState<string | null>(null);
-
-  const handleStartAuction = useCallback((lot: RinLot) => {
-    setLotForAuction(lot);
-    setShowStartAuctionDialog(true);
-  }, []);
-
-  const handleAuctionStarted = useCallback((auction: AuctionRecord) => {
-    setShowStartAuctionDialog(false);
-    setLotForAuction(null);
-    setSelectedAuctionId(auction.auctionId);
-  }, []);
 
   const handleViewAuction = useCallback((id: string) => {
     setSelectedAuctionId(id);
@@ -98,7 +81,7 @@ export default function App() {
   }, []);
 
   const mergedLots = useMemo<RinLot[]>(
-    () => [...sellerListings, ...rinLots],
+    () => sellerListings,
     [sellerListings],
   );
 
@@ -192,6 +175,8 @@ export default function App() {
         onOpenSupport={() => setShowSupportDialog(true)}
         buyerCompanyName={buyerProfile?.companyName}
         onOpenAuctions={() => setShowAuctionsSheet(true)}
+        onChangeIdentity={() => setShowBuyerOnboarding(true)}
+        onClearIdentity={() => clearBuyerProfile()}
       />
 
       {/* Marketplace hero / globe */}
@@ -235,7 +220,6 @@ export default function App() {
                 onClose={() => setSelectedLot(null)}
                 onAudit={() => setStage("audit-loading")}
                 onViewPurchaseInfo={() => setShowPurchaseModal(true)}
-                onStartAuction={handleStartAuction}
               />
             )}
           </>
@@ -256,20 +240,6 @@ export default function App() {
               lot={selectedLot}
               onBack={() => setStage("globe")}
               onRequestPurchase={() => setShowPurchaseModal(true)}
-              onGenerateAuditPacket={() =>
-                toast({
-                  title: "Audit packet generated",
-                  description: "Diligence packet ready for download.",
-                  variant: "success",
-                })
-              }
-              onRequestSellerDocs={() =>
-                toast({
-                  title: "Seller docs requested",
-                  description: "Request sent to the seller's compliance desk.",
-                })
-              }
-              onStartAuction={handleStartAuction}
             />
           </div>
         )}
@@ -287,7 +257,6 @@ export default function App() {
       {/* Marketing sections (scrollable) */}
       <FeaturesSection />
       <StatsSection />
-      <TrustedByMarquee />
       <PricingSection />
       <FAQSection />
       <CTASection onBrowse={scrollToMarketplace} />
@@ -313,8 +282,9 @@ export default function App() {
         onOpenChange={setShowListingSheet}
         pin={droppedPin}
         onPickLocation={onPickLocation}
-        onCreated={() => {
+        onCreated={(_listing, meta) => {
           setDroppedPin(null);
+          if (meta?.auctionId) setSelectedAuctionId(meta.auctionId);
         }}
       />
 
@@ -361,13 +331,6 @@ export default function App() {
         open={showAuctionsSheet}
         onOpenChange={setShowAuctionsSheet}
         onView={handleViewAuction}
-      />
-
-      <StartAuctionDialog
-        open={showStartAuctionDialog}
-        onOpenChange={setShowStartAuctionDialog}
-        lot={lotForAuction}
-        onStarted={handleAuctionStarted}
       />
 
       <LiveAuctionPanel

@@ -184,8 +184,7 @@ export function HowItWorksSection() {
 
         <p className="mt-8 text-center text-[10px] text-white/30 max-w-3xl mx-auto leading-relaxed">
           ORIN flags diligence risk before purchase. ORIN does not accuse
-          sellers of fraud, does not certify EPA validity, and does not process
-          EMTS transfers.
+          sellers of fraud and does not certify EPA validity.
         </p>
       </div>
     </section>

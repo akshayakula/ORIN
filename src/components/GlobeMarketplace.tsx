@@ -1,11 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 import type { RinLot } from "../types/rin";
-import {
-  rinLots as defaultRinLots,
-  getMarkerColor,
-  getMarkerColorRgba,
-} from "../data/rinLots";
+import { getMarkerColor, getMarkerColorRgba } from "../lib/lotStyles";
 
 interface GlobeMarketplaceProps {
   selectedLot: RinLot | null;
@@ -43,7 +39,7 @@ export default function GlobeMarketplace({
   lots,
   onGlobeClick,
 }: GlobeMarketplaceProps) {
-  const rinLots = lots ?? defaultRinLots;
+  const rinLots = lots ?? [];
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const globeRef = useRef<any>(null);
   const [mounted, setMounted] = useState(false);
