@@ -11,13 +11,25 @@ export default {
           600: "#101635",
         },
         cyan: {
-          glow: "#22e0ff",
+          glow: "#94a3b8",
         },
         amber: {
-          glow: "#ffb547",
+          glow: "#d97706",
         },
         rose: {
-          glow: "#ff5c7a",
+          glow: "#dc2626",
+        },
+        steel: {
+          50: "#f1f5f9",
+          300: "#cbd5e1",
+          400: "#94a3b8",
+          500: "#64748b",
+          700: "#334155",
+        },
+        signal: {
+          green: "#10b981",
+          amber: "#f59e0b",
+          red: "#ef4444",
         },
       },
       fontFamily: {
@@ -42,9 +54,9 @@ export default {
       boxShadow: {
         glass:
           "0 10px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255,255,255,0.06)",
-        glowCyan: "0 0 40px rgba(34, 224, 255, 0.45)",
-        glowAmber: "0 0 40px rgba(255, 181, 71, 0.45)",
-        glowRose: "0 0 40px rgba(255, 92, 122, 0.45)",
+        glowCyan: "0 0 18px rgba(148, 163, 184, 0.25)",
+        glowAmber: "0 0 18px rgba(217, 119, 6, 0.22)",
+        glowRose: "0 0 18px rgba(220, 38, 38, 0.22)",
       },
       animation: {
         "spin-slow": "spin 30s linear infinite",
@@ -55,8 +67,8 @@ export default {
       },
       keyframes: {
         "pulse-ring": {
-          "0%": { transform: "scale(0.5)", opacity: "0.9" },
-          "100%": { transform: "scale(2.4)", opacity: "0" },
+          "0%": { transform: "scale(0.5)", opacity: "0.6" },
+          "100%": { transform: "scale(1.6)", opacity: "0" },
         },
         "fade-up": {
           "0%": { opacity: "0", transform: "translateY(8px)" },

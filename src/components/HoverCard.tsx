@@ -1,11 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Layers,
-  Calendar,
-  DollarSign,
-  Activity,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "../lib/cn";
 import { fmtRins, fmtUSD } from "../lib/format";
 import type { RinLot } from "../types/rin";
@@ -19,23 +13,21 @@ interface HoverCardProps {
 }
 
 const gradePillStyles = {
-  low: "bg-cyan-glow/15 text-cyan-glow border-cyan-glow/30",
-  medium: "bg-amber-glow/15 text-amber-glow border-amber-glow/30",
-  high: "bg-rose-glow/15 text-rose-glow border-rose-glow/30",
+  low: "bg-emerald-500/10 text-emerald-300 border-emerald-500/30",
+  medium: "bg-amber-500/10 text-amber-300 border-amber-500/30",
+  high: "bg-red-500/10 text-red-300 border-red-500/30",
 } as const;
 
 interface DatumProps {
-  icon: typeof Layers;
   label: string;
   value: string;
   valueClass?: string;
 }
 
-function Datum({ icon: Icon, label, value, valueClass }: DatumProps) {
+function Datum({ label, value, valueClass }: DatumProps) {
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-1.5 text-white/55">
-        <Icon size={11} strokeWidth={2} />
+      <div className="text-white/55">
         <span className="label-mono">{label}</span>
       </div>
       <div
@@ -93,31 +85,18 @@ export default function HoverCard({ lot, x, y, visible }: HoverCardProps) {
             <div className="h-px bg-white/10" />
 
             <div className="grid grid-cols-2 gap-3">
+              <Datum label="Quantity" value={fmtRins(lot.quantity)} />
+              <Datum label="Vintage" value={String(lot.vintage)} />
+              <Datum label="Price" value={fmtUSD(lot.price)} />
               <Datum
-                icon={Layers}
-                label="Quantity"
-                value={fmtRins(lot.quantity)}
-              />
-              <Datum
-                icon={Calendar}
-                label="Vintage"
-                value={String(lot.vintage)}
-              />
-              <Datum
-                icon={DollarSign}
-                label="Price"
-                value={fmtUSD(lot.price)}
-              />
-              <Datum
-                icon={Activity}
                 label="Risk Score"
                 value={`${Math.round(lot.riskScore)} / 100`}
                 valueClass={
                   tier === "low"
-                    ? "text-cyan-glow"
+                    ? "text-emerald-300"
                     : tier === "medium"
-                      ? "text-amber-glow"
-                      : "text-rose-glow"
+                      ? "text-amber-300"
+                      : "text-red-300"
                 }
               />
             </div>

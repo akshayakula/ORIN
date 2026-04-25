@@ -1,22 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  X,
-  MapPin,
-  Building2,
-  Calendar,
-  DollarSign,
-  Layers,
-  FileCheck2,
-  FileWarning,
-  Satellite,
-  FlaskConical,
-  Receipt,
-  Sparkles,
-  Plus,
-} from "lucide-react";
+import { X, MapPin } from "lucide-react";
 import { cn } from "../lib/cn";
 import { fmtRins, fmtUSD, fmtUSDCompact } from "../lib/format";
 import type { RinLot } from "../types/rin";
+import type { SellerListing } from "../hooks/useSellerListings";
 import { getRiskTier } from "../data/rinLots";
 import RiskBadge from "./RiskBadge";
 
@@ -29,21 +16,21 @@ interface SelectedLotPanelProps {
 }
 
 const tierText = {
-  low: "text-cyan-glow",
-  medium: "text-amber-glow",
-  high: "text-rose-glow",
+  low: "text-emerald-300",
+  medium: "text-amber-300",
+  high: "text-red-300",
 } as const;
 
 const tierPillBg = {
-  low: "bg-cyan-glow/15 text-cyan-glow border-cyan-glow/30",
-  medium: "bg-amber-glow/15 text-amber-glow border-amber-glow/30",
-  high: "bg-rose-glow/15 text-rose-glow border-rose-glow/30",
+  low: "bg-emerald-500/10 text-emerald-300 border-emerald-500/30",
+  medium: "bg-amber-500/10 text-amber-300 border-amber-500/30",
+  high: "bg-red-500/10 text-red-300 border-red-500/30",
 } as const;
 
 const tierRecommendationBg = {
-  low: "bg-cyan-glow/10 border-cyan-glow/20",
-  medium: "bg-amber-glow/10 border-amber-glow/20",
-  high: "bg-rose-glow/10 border-rose-glow/20",
+  low: "bg-emerald-500/[0.06] border-emerald-500/20",
+  medium: "bg-amber-500/[0.06] border-amber-500/20",
+  high: "bg-red-500/[0.06] border-red-500/20",
 } as const;
 
 const tierSeverity = {
@@ -53,17 +40,15 @@ const tierSeverity = {
 } as const;
 
 interface StatProps {
-  icon: typeof Layers;
   label: string;
   value: string;
   valueClass?: string;
 }
 
-function Stat({ icon: Icon, label, value, valueClass }: StatProps) {
+function Stat({ label, value, valueClass }: StatProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex items-center gap-1.5 text-white/55">
-        <Icon size={12} strokeWidth={2} />
+      <div className="text-white/55">
         <span className="label-mono">{label}</span>
       </div>
       <div
@@ -79,22 +64,16 @@ function Stat({ icon: Icon, label, value, valueClass }: StatProps) {
 }
 
 interface RowProps {
-  icon: typeof Building2;
   label: string;
   value: string;
   valueClass?: string;
   trailing?: React.ReactNode;
 }
 
-function Row({ icon: Icon, label, value, valueClass, trailing }: RowProps) {
+function Row({ label, value, valueClass, trailing }: RowProps) {
   return (
     <div className="flex items-start justify-between gap-3">
       <div className="flex items-start gap-2.5 min-w-0">
-        <Icon
-          size={14}
-          strokeWidth={2}
-          className="mt-0.5 text-white/60 shrink-0"
-        />
         <div className="flex flex-col min-w-0">
           <span className="label-mono">{label}</span>
           <span
@@ -167,17 +146,33 @@ function PanelBody({
   const estimatedTotal = lot.quantity * lot.price;
   const qapVerified = lot.qapStatus === "Verified";
 
+  const sellerCandidate = lot as Partial<SellerListing>;
+  const enrichment = sellerCandidate.companyEnrichment;
+  const crustdataVerified =
+    sellerCandidate.sellerVerifiedByCrustdata === true || !!enrichment;
+  const enrichmentSummary = enrichment
+    ? [
+        enrichment.hqAddress ?? enrichment.hqCountry,
+        typeof enrichment.employeeCount === "number"
+          ? `${enrichment.employeeCount.toLocaleString()} employees`
+          : null,
+        enrichment.yearFounded ? `founded ${enrichment.yearFounded}` : null,
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : "";
+
   const qapDotColor = qapVerified
-    ? "bg-cyan-glow"
+    ? "bg-emerald-400"
     : lot.qapStatus === "Partial"
-      ? "bg-amber-glow"
-      : "bg-rose-glow";
+      ? "bg-amber-400"
+      : "bg-red-400";
 
   const satLower = lot.satelliteStatus.toLowerCase();
   const satColor = satLower.includes("no major")
-    ? "text-cyan-glow"
+    ? "text-emerald-300"
     : satLower.includes("mismatch") || satLower.includes("review")
-      ? "text-amber-glow"
+      ? "text-amber-300"
       : "text-white/80";
 
   return (
@@ -225,23 +220,10 @@ function PanelBody({
       <Divider />
 
       <div className="px-6 py-5 grid grid-cols-2 gap-5">
+        <Stat label="Quantity" value={fmtRins(lot.quantity)} />
+        <Stat label="Vintage" value={String(lot.vintage)} />
+        <Stat label="Price per RIN" value={fmtUSD(lot.price)} />
         <Stat
-          icon={Layers}
-          label="Quantity"
-          value={fmtRins(lot.quantity)}
-        />
-        <Stat
-          icon={Calendar}
-          label="Vintage"
-          value={String(lot.vintage)}
-        />
-        <Stat
-          icon={DollarSign}
-          label="Price per RIN"
-          value={fmtUSD(lot.price)}
-        />
-        <Stat
-          icon={Receipt}
           label="Est. Total Value"
           value={fmtUSDCompact(estimatedTotal)}
           valueClass="text-white"
@@ -251,8 +233,28 @@ function PanelBody({
       <Divider />
 
       <div className="px-6 py-5 flex flex-col gap-4">
-        <Row icon={Building2} label="Seller" value={lot.seller} />
-        <Row icon={FlaskConical} label="Facility" value={lot.facility} />
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <span className="label-mono">Seller</span>
+            {crustdataVerified ? (
+              <span className="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300 px-2 py-0.5 text-[9px] uppercase tracking-[0.18em] font-semibold">
+                Verified via Crustdata
+              </span>
+            ) : null}
+          </div>
+          <span
+            className="text-sm text-white/90 truncate"
+            title={lot.seller}
+          >
+            {lot.seller}
+          </span>
+          {enrichmentSummary ? (
+            <span className="text-[11px] text-white/55 truncate" title={enrichmentSummary}>
+              {enrichmentSummary}
+            </span>
+          ) : null}
+        </div>
+        <Row label="Facility" value={lot.facility} />
       </div>
 
       <Divider />
@@ -294,23 +296,6 @@ function PanelBody({
                 qapDotColor,
               )}
             />
-            {qapVerified ? (
-              <FileCheck2
-                size={14}
-                strokeWidth={2}
-                className="text-cyan-glow"
-              />
-            ) : (
-              <FileWarning
-                size={14}
-                strokeWidth={2}
-                className={
-                  lot.qapStatus === "Partial"
-                    ? "text-amber-glow"
-                    : "text-rose-glow"
-                }
-              />
-            )}
             <span className="font-mono text-sm text-white/90">
               {lot.qapStatus}
             </span>
@@ -320,11 +305,6 @@ function PanelBody({
         <div className="flex items-start justify-between gap-4">
           <span className="label-mono mt-0.5">Satellite</span>
           <div className="flex items-start gap-2 max-w-[240px] text-right">
-            <Satellite
-              size={14}
-              strokeWidth={2}
-              className={cn("mt-0.5 shrink-0", satColor)}
-            />
             <span className={cn("text-sm", satColor)}>
               {lot.satelliteStatus}
             </span>
@@ -354,7 +334,6 @@ function PanelBody({
           onClick={onAudit}
           className="btn-primary justify-center w-full"
         >
-          <Sparkles size={15} strokeWidth={2.25} />
           Audit RIN
         </button>
         <button
@@ -362,7 +341,6 @@ function PanelBody({
           onClick={onViewPurchaseInfo}
           className="btn-ghost justify-center w-full"
         >
-          <Receipt size={15} strokeWidth={2} />
           View Purchase Info
         </button>
         {onAddToCompare && (
@@ -371,7 +349,6 @@ function PanelBody({
             onClick={() => onAddToCompare(lot)}
             className="btn-ghost justify-center w-full"
           >
-            <Plus size={15} strokeWidth={2} />
             Add to Compare
           </button>
         )}

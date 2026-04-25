@@ -1,4 +1,4 @@
-// Netlify Function: NASA FIRMS VIIRS NRT thermal anomaly lookup for a bbox.
+// Netlify Function: NASA FIRMS NRT thermal anomaly lookup for a bbox.
 // Falls back to deterministic mock data when the upstream is unreachable or the
 // MAP_KEY is missing — the demo UI must never break.
 
@@ -11,7 +11,7 @@ type Handler = (event: {
   body: string;
 }>;
 
-interface Detection {
+export interface Detection {
   latitude: number;
   longitude: number;
   bright_ti4?: number;
@@ -26,16 +26,27 @@ interface Detection {
   daynight?: string;
 }
 
-interface Bbox {
+export interface Bbox {
   west: number;
   south: number;
   east: number;
   north: number;
 }
 
-type FirmsStatus = "no-anomaly" | "low-activity" | "review-recommended";
+export type FirmsStatus = "no-anomaly" | "low-activity" | "review-recommended";
 
-interface FirmsResponse {
+export type FirmsSensor =
+  | "VIIRS_SNPP_NRT"
+  | "VIIRS_NOAA20_NRT"
+  | "MODIS_NRT";
+
+const ALLOWED_SENSORS: FirmsSensor[] = [
+  "VIIRS_SNPP_NRT",
+  "VIIRS_NOAA20_NRT",
+  "MODIS_NRT",
+];
+
+export interface FirmsResponse {
   detections: Detection[];
   count: number;
   scanDays: number;
@@ -43,6 +54,7 @@ interface FirmsResponse {
   status: FirmsStatus;
   statusLabel: string;
   source: "live" | "mock";
+  source_sensor: FirmsSensor;
   fetchedAt: string;
 }
 
@@ -59,9 +71,7 @@ function jsonHeaders(source: "live" | "mock"): Record<string, string> {
     ...CORS_HEADERS,
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control":
-      source === "live"
-        ? "public, max-age=300"
-        : "public, max-age=60",
+      source === "live" ? "public, max-age=300" : "public, max-age=60",
   };
 }
 
@@ -73,6 +83,41 @@ interface CacheEntry {
 }
 const CACHE_TTL_MS = 60_000;
 const cache: Map<string, CacheEntry> = new Map();
+
+// ---- Rate-limit guard (warm-container only) ----------------------------------
+
+interface RateEntry {
+  windowStart: number;
+  count: number;
+}
+const RATE_WINDOW_MS = 10 * 60_000;
+const RATE_MAX = 30;
+const rateMap: Map<string, RateEntry> = new Map();
+
+function bumpRate(key: string, now: number): boolean {
+  const existing = rateMap.get(key);
+  if (!existing || now - existing.windowStart > RATE_WINDOW_MS) {
+    rateMap.set(key, { windowStart: now, count: 1 });
+    return false;
+  }
+  existing.count += 1;
+  return existing.count > RATE_MAX;
+}
+
+// ---- Structured log ----------------------------------------------------------
+
+function logEvent(entry: {
+  stage: "validate" | "fetch" | "parse" | "ok" | "ratelimit" | "cache";
+  ms: number;
+  count?: number;
+  source?: "live" | "mock";
+  sensor?: string;
+  note?: string;
+}): void {
+  // Single-line structured log — never includes the map key.
+
+  console.log(JSON.stringify({ fn: "firms", ...entry }));
+}
 
 // ---- Status classification ----------------------------------------------------
 
@@ -97,8 +142,6 @@ function stripBom(s: string): string {
 }
 
 function splitCsvLine(line: string): string[] {
-  // Defensive splitter: handles basic double-quoted fields. VIIRS NRT
-  // usually has none, but we guard against a rogue embedded comma.
   const out: string[] = [];
   let buf = "";
   let inQuotes = false;
@@ -180,8 +223,8 @@ function mockFirms(
   lng: number,
   days: number,
   bbox: Bbox,
+  sensor: FirmsSensor,
 ): FirmsResponse {
-  // Deterministic-ish seeded count
   const seed = Math.abs(Math.sin(lat * lng));
   const count = Math.max(0, Math.round(seed * 6 - 1));
   const detections: Detection[] = Array.from({ length: count }).map((_, i) => ({
@@ -193,7 +236,7 @@ function mockFirms(
     track: 0.42,
     acq_date: new Date(Date.now() - i * 86_400_000).toISOString().slice(0, 10),
     acq_time: "1830",
-    satellite: "VIIRS_SNPP_NRT",
+    satellite: sensor,
     confidence: i % 2 === 0 ? "n" : "h",
     frp: 5 + i,
     daynight: "N",
@@ -207,6 +250,7 @@ function mockFirms(
     status,
     statusLabel,
     source: "mock",
+    source_sensor: sensor,
     fetchedAt: new Date().toISOString(),
   };
 }
@@ -216,104 +260,86 @@ function mockFirms(
 function sanitize(s: string, mapKey: string | undefined): string {
   if (!s) return s;
   if (!mapKey) return s;
-  // Never echo the MAP_KEY back in errors.
   return s.split(mapKey).join("***");
 }
 
 function looksLikeFirmsError(body: string): boolean {
   const b = body.trim().toLowerCase();
   if (!b) return true;
-  if (b.startsWith("<")) return true; // HTML error page
+  if (b.startsWith("<")) return true;
   if (b.includes("invalid map_key")) return true;
   if (b.includes("invalid mapkey")) return true;
   if (b.includes("map_key")) return true;
   if (b.includes("error")) {
-    // FIRMS sometimes returns plain "Error: ..." strings
     if (!b.includes("latitude")) return true;
   }
   return false;
 }
 
-// ---- Handler ------------------------------------------------------------------
+function normalizeSensor(raw: string | undefined): FirmsSensor {
+  if (!raw) return "VIIRS_SNPP_NRT";
+  const up = raw.trim().toUpperCase();
+  const hit = ALLOWED_SENSORS.find((s) => s === up);
+  return hit ?? "VIIRS_SNPP_NRT";
+}
 
-export const handler: Handler = async (event) => {
-  // CORS preflight
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
-      headers: CORS_HEADERS,
-      body: "",
-    };
-  }
+// ---- Pure runner (also used by audit.ts) -------------------------------------
 
-  const qs = event.queryStringParameters ?? {};
-  const rawLat = qs.lat;
-  const rawLng = qs.lng;
-  const rawDays = qs.days ?? "7";
-
-  const lat = Number(rawLat);
-  const lng = Number(rawLng);
-  const days = Math.floor(Number(rawDays));
-
-  if (
-    rawLat == null ||
-    rawLng == null ||
-    !Number.isFinite(lat) ||
-    !Number.isFinite(lng)
-  ) {
-    return {
-      statusCode: 400,
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        error: "Missing or invalid lat/lng query parameters.",
-        example: "/.netlify/functions/firms?lat=29.76&lng=-95.37&days=7",
-      }),
-    };
-  }
-  if (!Number.isFinite(days) || days < 1 || days > 10) {
-    return {
-      statusCode: 400,
-      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        error: "`days` must be an integer in [1, 10] (NASA FIRMS limit).",
-      }),
-    };
-  }
-
+export async function runFirms(
+  lat: number,
+  lng: number,
+  days: number,
+  sensor: FirmsSensor = "VIIRS_SNPP_NRT",
+): Promise<FirmsResponse> {
+  const start = Date.now();
   const bbox: Bbox = {
     west: lng - 0.5,
     south: lat - 0.5,
     east: lng + 0.5,
     north: lat + 0.5,
   };
-
-  const cacheKey = `${bbox.west.toFixed(4)}|${bbox.south.toFixed(4)}|${bbox.east.toFixed(4)}|${bbox.north.toFixed(4)}|${days}`;
+  const cacheKey = `${bbox.west.toFixed(4)}|${bbox.south.toFixed(4)}|${bbox.east.toFixed(4)}|${bbox.north.toFixed(4)}|${days}|${sensor}`;
   const now = Date.now();
+
   const cached = cache.get(cacheKey);
   if (cached && cached.expires > now) {
-    return {
-      statusCode: 200,
-      headers: jsonHeaders(cached.payload.source),
-      body: JSON.stringify(cached.payload),
-    };
+    logEvent({
+      stage: "cache",
+      ms: Date.now() - start,
+      count: cached.payload.count,
+      source: cached.payload.source,
+      sensor,
+    });
+    return cached.payload;
+  }
+
+  // Rate-limit guard: too many unique hits to same bucket → serve cached or mock.
+  if (bumpRate(cacheKey, now)) {
+    logEvent({ stage: "ratelimit", ms: Date.now() - start, sensor });
+    if (cached) return cached.payload;
+    const payload = mockFirms(lat, lng, days, bbox, sensor);
+    cache.set(cacheKey, { expires: now + CACHE_TTL_MS, payload });
+    return payload;
   }
 
   const mapKey = process.env.NASA_FIRMS_MAP_KEY;
-
-  // No key → immediate deterministic mock.
   if (!mapKey) {
-    const payload = mockFirms(lat, lng, days, bbox);
+    const payload = mockFirms(lat, lng, days, bbox, sensor);
     cache.set(cacheKey, { expires: now + CACHE_TTL_MS, payload });
-    return {
-      statusCode: 200,
-      headers: jsonHeaders("mock"),
-      body: JSON.stringify(payload),
-    };
+    logEvent({
+      stage: "ok",
+      ms: Date.now() - start,
+      count: payload.count,
+      source: "mock",
+      sensor,
+      note: "no-map-key",
+    });
+    return payload;
   }
 
   const url =
     `https://firms.modaps.eosdis.nasa.gov/api/area/csv/${mapKey}` +
-    `/VIIRS_SNPP_NRT/${bbox.west},${bbox.south},${bbox.east},${bbox.north}/${days}`;
+    `/${sensor}/${bbox.west},${bbox.south},${bbox.east},${bbox.north}/${days}`;
 
   try {
     const controller = new AbortController();
@@ -322,33 +348,28 @@ export const handler: Handler = async (event) => {
     clearTimeout(timeout);
 
     if (!res.ok) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        "FIRMS upstream non-200:",
-        res.status,
-        sanitize(res.statusText ?? "", mapKey),
-      );
-      const payload = mockFirms(lat, lng, days, bbox);
+      logEvent({
+        stage: "fetch",
+        ms: Date.now() - start,
+        sensor,
+        note: `upstream-${res.status}`,
+      });
+      const payload = mockFirms(lat, lng, days, bbox, sensor);
       cache.set(cacheKey, { expires: now + CACHE_TTL_MS, payload });
-      return {
-        statusCode: 200,
-        headers: jsonHeaders("mock"),
-        body: JSON.stringify(payload),
-      };
+      return payload;
     }
 
     const text = await res.text();
-
     if (looksLikeFirmsError(text)) {
-      // eslint-disable-next-line no-console
-      console.warn("FIRMS returned error body; falling back to mock.");
-      const payload = mockFirms(lat, lng, days, bbox);
+      logEvent({
+        stage: "parse",
+        ms: Date.now() - start,
+        sensor,
+        note: "error-body",
+      });
+      const payload = mockFirms(lat, lng, days, bbox, sensor);
       cache.set(cacheKey, { expires: now + CACHE_TTL_MS, payload });
-      return {
-        statusCode: 200,
-        headers: jsonHeaders("mock"),
-        body: JSON.stringify(payload),
-      };
+      return payload;
     }
 
     const detections = parseFirmsCsv(text);
@@ -361,29 +382,90 @@ export const handler: Handler = async (event) => {
       status,
       statusLabel,
       source: "live",
+      source_sensor: sensor,
       fetchedAt: new Date().toISOString(),
     };
     cache.set(cacheKey, { expires: now + CACHE_TTL_MS, payload });
-    return {
-      statusCode: 200,
-      headers: jsonHeaders("live"),
-      body: JSON.stringify(payload),
-    };
+    logEvent({
+      stage: "ok",
+      ms: Date.now() - start,
+      count: detections.length,
+      source: "live",
+      sensor,
+    });
+    return payload;
   } catch (err) {
     const msg = sanitize(
       err instanceof Error ? err.message : String(err),
       mapKey,
     );
-    // eslint-disable-next-line no-console
-    console.warn("FIRMS fetch failed:", msg);
-    const payload = mockFirms(lat, lng, days, bbox);
+    logEvent({
+      stage: "fetch",
+      ms: Date.now() - start,
+      sensor,
+      note: `exception:${msg.slice(0, 80)}`,
+    });
+    const payload = mockFirms(lat, lng, days, bbox, sensor);
     cache.set(cacheKey, { expires: now + CACHE_TTL_MS, payload });
+    return payload;
+  }
+}
+
+// ---- Handler ------------------------------------------------------------------
+
+export const handler: Handler = async (event) => {
+  const t0 = Date.now();
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 204, headers: CORS_HEADERS, body: "" };
+  }
+
+  const qs = event.queryStringParameters ?? {};
+  const rawLat = qs.lat;
+  const rawLng = qs.lng;
+  const rawDays = qs.days ?? "3";
+  const sensor = normalizeSensor(qs.sources ?? qs.sensor);
+
+  const lat = Number(rawLat);
+  const lng = Number(rawLng);
+  const days = Math.floor(Number(rawDays));
+
+  if (
+    rawLat == null ||
+    rawLng == null ||
+    !Number.isFinite(lat) ||
+    !Number.isFinite(lng) ||
+    lat < -90 ||
+    lat > 90 ||
+    lng < -180 ||
+    lng > 180
+  ) {
+    logEvent({ stage: "validate", ms: Date.now() - t0, note: "bad-latlng" });
     return {
-      statusCode: 200,
-      headers: jsonHeaders("mock"),
-      body: JSON.stringify(payload),
+      statusCode: 400,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        error: "Missing or invalid lat/lng query parameters.",
+        example: "/.netlify/functions/firms?lat=29.76&lng=-95.37&days=7",
+      }),
     };
   }
+  if (!Number.isFinite(days) || days < 1 || days > 5) {
+    logEvent({ stage: "validate", ms: Date.now() - t0, note: "bad-days" });
+    return {
+      statusCode: 400,
+      headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        error: "`days` must be an integer in [1, 5] (NASA FIRMS area/csv caps DAY_RANGE at 5).",
+      }),
+    };
+  }
+
+  const payload = await runFirms(lat, lng, days, sensor);
+  return {
+    statusCode: 200,
+    headers: jsonHeaders(payload.source),
+    body: JSON.stringify(payload),
+  };
 };
 
 export default handler;

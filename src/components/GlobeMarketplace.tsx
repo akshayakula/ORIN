@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 import type { RinLot } from "../types/rin";
 import {
-  rinLots,
+  rinLots as defaultRinLots,
   getMarkerColor,
   getMarkerColorRgba,
 } from "../data/rinLots";
@@ -13,6 +13,8 @@ interface GlobeMarketplaceProps {
   onHover: (lot: RinLot | null) => void;
   onSelect: (lot: RinLot | null) => void;
   auditing?: boolean;
+  lots?: RinLot[];
+  onGlobeClick?: (coords: { lat: number; lng: number }) => void;
 }
 
 const US_VIEW = { lat: 39.8, lng: -98.5, altitude: 2.2 } as const;
@@ -38,7 +40,10 @@ export default function GlobeMarketplace({
   onHover,
   onSelect,
   auditing = false,
+  lots,
+  onGlobeClick,
 }: GlobeMarketplaceProps) {
+  const rinLots = lots ?? defaultRinLots;
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const globeRef = useRef<any>(null);
   const [mounted, setMounted] = useState(false);
@@ -94,9 +99,9 @@ export default function GlobeMarketplace({
       });
     }
     return base;
-  }, [auditing, selectedLot]);
+  }, [auditing, selectedLot, rinLots]);
 
-  const labelsData = useMemo(() => rinLots, []);
+  const labelsData = useMemo(() => rinLots, [rinLots]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -175,9 +180,12 @@ export default function GlobeMarketplace({
           bumpImageUrl={BUMP_IMAGE}
           backgroundImageUrl={BACKGROUND_IMAGE}
           showAtmosphere
-          atmosphereColor="#22e0ff"
+          atmosphereColor="#94a3b8"
           atmosphereAltitude={0.18}
           animateIn
+          onGlobeClick={(c: { lat: number; lng: number }) => {
+            onGlobeClick?.({ lat: c.lat, lng: c.lng });
+          }}
           pointsData={rinLots}
           pointLat="lat"
           pointLng="lng"

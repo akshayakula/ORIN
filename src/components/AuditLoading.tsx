@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Check, ShieldCheck } from "lucide-react";
+import { Loader2, Check } from "lucide-react";
 import { cn } from "../lib/cn";
 import type { RinLot } from "../types/rin";
 
@@ -14,6 +14,7 @@ const STEPS = [
   "Matching seller and facility identity",
   "Scanning satellite methane signals",
   "Checking NASA thermal / flare anomalies",
+  "Sampling ambient air quality",
   "Reviewing production plausibility",
   "Generating diligence packet",
 ] as const;
@@ -41,7 +42,7 @@ function RightLabel({ state }: RightLabelProps) {
           className={cn(
             "absolute inset-0 font-mono text-[10px] tracking-[0.14em] uppercase",
             state === "idle" && "text-white/30",
-            state === "running" && "text-cyan-glow",
+            state === "running" && "text-steel-300",
             state === "done" && "text-white/60",
           )}
         >
@@ -85,7 +86,7 @@ function StatusIndicator({ state }: StatusIndicatorProps) {
           >
             <Loader2
               size={18}
-              className="animate-spin text-cyan-glow"
+              className="animate-spin text-steel-300"
               strokeWidth={2.25}
             />
           </motion.div>
@@ -97,11 +98,11 @@ function StatusIndicator({ state }: StatusIndicatorProps) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.7, opacity: 0 }}
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-glow/15 ring-1 ring-inset ring-cyan-glow/40"
+            className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/15 ring-1 ring-inset ring-emerald-500/30"
           >
             <Check
               size={14}
-              className="text-cyan-glow"
+              className="text-emerald-300"
               strokeWidth={2.75}
             />
           </motion.div>
@@ -179,11 +180,6 @@ export default function AuditLoading({ lot, onComplete }: AuditLoadingProps) {
       >
         <div className="scan-overlay" />
 
-        {/* Brand corner */}
-        <div className="absolute left-5 top-5 flex items-center gap-1.5 text-cyan-glow/80">
-          <ShieldCheck size={14} strokeWidth={2.25} />
-        </div>
-
         <div className="relative flex flex-col gap-5">
           <div className="flex flex-col items-center gap-1.5 text-center">
             <div className="label-mono">ORIN INTEGRITY AUDIT</div>
@@ -216,7 +212,7 @@ export default function AuditLoading({ lot, onComplete }: AuditLoadingProps) {
                     "flex items-center gap-3 rounded-xl px-3 py-2.5",
                     "bg-white/[0.03] border border-white/10",
                     state === "running" &&
-                      "bg-cyan-glow/[0.06] border-cyan-glow/20",
+                      "bg-steel-400/[0.06] border-steel-400/20",
                     state === "done" && "bg-white/[0.04] border-white/10",
                   )}
                 >
@@ -246,10 +242,7 @@ export default function AuditLoading({ lot, onComplete }: AuditLoadingProps) {
             </div>
             <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-white/5">
               <motion.div
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-cyan-glow/80 to-cyan-300"
-                style={{
-                  boxShadow: "0 0 12px rgba(34, 224, 255, 0.55)",
-                }}
+                className="absolute inset-y-0 left-0 rounded-full bg-steel-300"
                 initial={{ width: "0%" }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}

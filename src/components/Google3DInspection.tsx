@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Loader } from "@googlemaps/js-api-loader";
-import { Globe2, Satellite, MapPin, AlertTriangle, ExternalLink } from "lucide-react";
+import { Globe2, MapPin, AlertTriangle, ExternalLink } from "lucide-react";
 import type { RinLot } from "../types/rin";
 import { cn } from "../lib/cn";
 
@@ -14,20 +14,20 @@ type LoadState = "idle" | "loading" | "ready" | "error";
 function satelliteToneClasses(status: string): string {
   const s = status.toLowerCase();
   if (s.includes("mismatch")) {
-    return "bg-rose-500/15 text-rose-200 border-rose-400/30";
+    return "bg-red-500/10 text-red-300 border-red-500/30";
   }
   if (s.includes("review") || s.includes("pending") || s.includes("partial")) {
-    return "bg-amber-500/15 text-amber-200 border-amber-400/30";
+    return "bg-amber-500/10 text-amber-300 border-amber-500/30";
   }
-  return "bg-cyan-400/15 text-cyan-200 border-cyan-300/30";
+  return "bg-emerald-500/10 text-emerald-300 border-emerald-500/30";
 }
 
 function satelliteDotClass(status: string): string {
   const s = status.toLowerCase();
-  if (s.includes("mismatch")) return "bg-rose-400 shadow-[0_0_12px_rgba(255,92,122,0.8)]";
+  if (s.includes("mismatch")) return "bg-red-400";
   if (s.includes("review") || s.includes("pending") || s.includes("partial"))
-    return "bg-amber-300 shadow-[0_0_12px_rgba(255,181,71,0.8)]";
-  return "bg-cyan-300 shadow-[0_0_12px_rgba(34,224,255,0.8)]";
+    return "bg-amber-400";
+  return "bg-emerald-400";
 }
 
 export default function Google3DInspection({ lot }: Google3DInspectionProps) {
@@ -158,8 +158,8 @@ export default function Google3DInspection({ lot }: Google3DInspectionProps) {
                 />
               </pattern>
               <radialGradient id="g3d-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="rgba(34,224,255,0.25)" />
-                <stop offset="100%" stopColor="rgba(34,224,255,0)" />
+                <stop offset="0%" stopColor="rgba(148,163,184,0.18)" />
+                <stop offset="100%" stopColor="rgba(148,163,184,0)" />
               </radialGradient>
             </defs>
             <rect width="100%" height="100%" fill="url(#g3d-grid)" />
@@ -170,9 +170,9 @@ export default function Google3DInspection({ lot }: Google3DInspectionProps) {
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative">
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="h-10 w-10 rounded-full bg-cyan-300/20 animate-pulse-ring" />
+                <span className="h-10 w-10 rounded-full bg-steel-400/15 animate-pulse-ring" />
               </div>
-              <MapPin className="relative h-7 w-7 text-white/80 drop-shadow-[0_0_10px_rgba(34,224,255,0.6)]" />
+              <MapPin className="relative h-7 w-7 text-white/80" />
             </div>
           </div>
 
@@ -205,7 +205,7 @@ export default function Google3DInspection({ lot }: Google3DInspectionProps) {
           <div className="absolute inset-0 bg-gradient-to-br from-space-800/60 to-space-700/40" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="glass px-4 py-2 label-mono flex items-center gap-2">
-              <Globe2 className="h-3.5 w-3.5 text-cyan-300 animate-spin-slow" />
+              <Globe2 className="h-3.5 w-3.5 text-steel-300 animate-spin-slow" />
               Loading 3D terrain…
             </div>
           </div>
@@ -215,8 +215,7 @@ export default function Google3DInspection({ lot }: Google3DInspectionProps) {
       {/* Top-left overlay: site identity */}
       <div className="absolute top-3 left-3 z-10 pointer-events-none">
         <div className="glass-dark px-3.5 py-2.5 rounded-xl backdrop-blur-xl max-w-[260px]">
-          <div className="flex items-center gap-2 mb-1">
-            <Satellite className="h-3 w-3 text-cyan-300" />
+          <div className="mb-1">
             <span className="label-mono">3D Site Inspection</span>
           </div>
           <div className="text-white text-sm font-semibold leading-tight">

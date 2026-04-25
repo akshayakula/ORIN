@@ -11,3 +11,5 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .vite
+*.tsbuildinfo
+deno.lock

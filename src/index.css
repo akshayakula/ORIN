@@ -58,7 +58,10 @@ body::before {
 
 @layer components {
   .glass {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-glass rounded-2xl text-white;
+    @apply bg-white/[0.08] backdrop-blur-xl border border-white/10 shadow-glass rounded-2xl text-white;
+  }
+  .glass-rim {
+    @apply border-white/15;
   }
   .glass-dark {
     @apply bg-space-900/60 backdrop-blur-xl border border-white/10 shadow-glass rounded-2xl text-white;
@@ -78,25 +81,26 @@ body::before {
   }
   .btn-primary {
     @apply inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold
-      bg-gradient-to-b from-cyan-300/90 to-cyan-500/90 text-space-900
-      shadow-[0_8px_30px_rgba(34,224,255,0.35)]
-      transition hover:from-cyan-200 hover:to-cyan-400
-      active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-cyan-300/60;
+      bg-amber-600 hover:bg-amber-500 text-white border border-amber-500/40
+      shadow-[0_4px_18px_rgba(217,119,6,0.22)]
+      transition active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-amber-400/50;
   }
   .btn-ghost {
     @apply inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium
-      bg-white/5 hover:bg-white/10 border border-white/15 text-white
-      transition focus:outline-none focus:ring-2 focus:ring-white/30;
+      bg-white/5 hover:bg-white/10 border border-slate-400/20 text-white
+      transition focus:outline-none focus:ring-2 focus:ring-slate-300/30;
   }
   .btn-danger {
     @apply inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold
-      bg-gradient-to-b from-rose-400/90 to-rose-600/90 text-white
-      shadow-[0_8px_30px_rgba(255,92,122,0.35)]
-      transition hover:from-rose-300 hover:to-rose-500
-      active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-rose-300/60;
+      bg-red-600 hover:bg-red-500 text-white border border-red-500/40
+      shadow-[0_4px_18px_rgba(220,38,38,0.22)]
+      transition active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-red-400/50;
   }
   .label-mono {
     @apply font-mono uppercase tracking-[0.18em] text-[10px] text-white/60;
+  }
+  .eyebrow {
+    @apply text-[10px] uppercase tracking-[0.22em] text-white/45 font-mono;
   }
   .scan-overlay {
     position: absolute;

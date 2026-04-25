@@ -5,7 +5,7 @@ const FIRMS_ENDPOINTS = ["/.netlify/functions/firms", "/api/firms"];
 export async function fetchFirms(
   lat: number,
   lng: number,
-  days = 7,
+  days = 3,
   signal?: AbortSignal,
 ): Promise<FirmsResponse> {
   let lastErr: unknown;
@@ -36,7 +36,7 @@ export async function fetchFirms(
 export function mockFirms(
   lat: number,
   lng: number,
-  days = 7,
+  days = 3,
   forceCount?: number,
 ): FirmsResponse {
   const count =

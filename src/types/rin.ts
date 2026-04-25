@@ -56,6 +56,7 @@ export interface FirmsResponse {
   status: "no-anomaly" | "low-activity" | "review-recommended";
   statusLabel: string;
   source: "live" | "mock";
+  source_sensor?: string;
   fetchedAt: string;
 }
 
@@ -74,3 +75,31 @@ export type AppStage =
   | "audit-loading"
   | "audit-results"
   | "purchase-confirmed";
+
+export interface AirQualityPollutant {
+  code: string;
+  displayName: string;
+  fullName?: string;
+  concentration?: { value: number; units: string };
+  additionalInfo?: { sources?: string; effects?: string };
+}
+
+export interface AirQualityIndex {
+  code: string;
+  displayName: string;
+  aqi: number;
+  aqiDisplay?: string;
+  color?: { red?: number; green?: number; blue?: number };
+  category?: string;
+  dominantPollutant?: string;
+}
+
+export interface AirQualityResponse {
+  dateTime: string;
+  regionCode?: string;
+  indexes: AirQualityIndex[];
+  pollutants: AirQualityPollutant[];
+  healthRecommendations?: Record<string, string>;
+  source: "live" | "mock";
+  fetchedAt: string;
+}

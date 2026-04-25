@@ -38,6 +38,7 @@ import { epaSummary, referencePrices } from "../data/epaContext";
 import RiskBadge from "./RiskBadge";
 import ScoreCard from "./ScoreCard";
 import Google3DInspection from "./Google3DInspection";
+import AirQualityCard from "./AirQualityCard";
 
 interface AuditResultsProps {
   lot: RinLot;
@@ -90,7 +91,7 @@ function CardTitle({ icon, title, subtitle, right }: CardTitleProps) {
   return (
     <div className="mb-4 flex items-start justify-between gap-3">
       <div className="flex items-start gap-2.5">
-        <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 ring-1 ring-inset ring-white/10 text-cyan-glow">
+        <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-lg bg-white/5 ring-1 ring-inset ring-white/10 text-steel-400 [&>svg]:h-3.5 [&>svg]:w-3.5">
           {icon}
         </div>
         <div className="flex flex-col">
@@ -172,9 +173,9 @@ function PurchaseInfo({ lot }: PurchaseInfoProps) {
       value: (
         <span
           className={cn(
-            lot.qapStatus === "Verified" && "text-cyan-glow",
-            lot.qapStatus === "Partial" && "text-amber-glow",
-            lot.qapStatus === "Missing" && "text-rose-glow",
+            lot.qapStatus === "Verified" && "text-emerald-300",
+            lot.qapStatus === "Partial" && "text-amber-300",
+            lot.qapStatus === "Missing" && "text-red-300",
           )}
         >
           {lot.qapProvider}
@@ -197,7 +198,7 @@ function PurchaseInfo({ lot }: PurchaseInfoProps) {
             key={r.label}
             className={cn(
               "rounded-xl border border-white/10 bg-white/[0.03] p-3",
-              r.emphasize && "border-cyan-glow/30 bg-cyan-glow/[0.05]",
+              r.emphasize && "border-amber-500/30 bg-amber-500/[0.05]",
             )}
           >
             <div className="label-mono">{r.label}</div>
@@ -217,7 +218,7 @@ function PurchaseInfo({ lot }: PurchaseInfoProps) {
           <div className="relative mt-2 h-2 rounded-full bg-white/[0.06]">
             {/* low to high band tint */}
             <div
-              className="absolute inset-y-0 rounded-full bg-cyan-glow/10"
+              className="absolute inset-y-0 rounded-full bg-steel-400/10"
               style={{
                 left: `${lowPct}%`,
                 width: `${Math.max(0, highPct - lowPct)}%`,
@@ -247,7 +248,7 @@ function PurchaseInfo({ lot }: PurchaseInfoProps) {
                 delay: 0.2,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-glow shadow-glowCyan ring-2 ring-space-900"
+              className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-steel-300 ring-2 ring-space-900"
               style={{ left: `${pricePct}%` }}
             />
           </div>
@@ -256,7 +257,7 @@ function PurchaseInfo({ lot }: PurchaseInfoProps) {
             <span>{fmtUSD(bandMax)}</span>
           </div>
           {outOfBandNote && (
-            <p className="mt-2 flex items-center gap-1.5 text-[11px] text-amber-glow/90">
+            <p className="mt-2 flex items-center gap-1.5 text-[11px] text-amber-300/90">
               <AlertCircle size={12} strokeWidth={2.25} />
               {outOfBandNote}
             </p>
@@ -287,10 +288,10 @@ function RiskFlagsCard({ lot }: RiskFlagsCardProps) {
   const allClear = lot.riskScore <= 25 && !hasHigh;
 
   const severityBarColor: Record<string, string> = {
-    low: "bg-cyan-glow",
-    medium: "bg-amber-glow",
-    high: "bg-rose-glow",
-    critical: "bg-rose-glow",
+    low: "bg-emerald-400",
+    medium: "bg-amber-400",
+    high: "bg-red-400",
+    critical: "bg-red-500",
   };
 
   return (
@@ -306,10 +307,10 @@ function RiskFlagsCard({ lot }: RiskFlagsCardProps) {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="mb-3 flex items-center gap-2 rounded-xl border border-cyan-glow/25 bg-cyan-glow/[0.08] px-3 py-2"
+          className="mb-3 flex items-center gap-2 rounded-xl border border-emerald-500/25 bg-emerald-500/[0.06] px-3 py-2"
         >
-          <CheckCircle2 size={14} className="text-cyan-glow" strokeWidth={2.5} />
-          <div className="text-sm font-medium text-cyan-glow">
+          <CheckCircle2 size={14} className="text-emerald-300" strokeWidth={2.5} />
+          <div className="text-sm font-medium text-emerald-300">
             All checks passed
           </div>
         </motion.div>
@@ -401,23 +402,23 @@ function FirmsScan({ lot }: FirmsScanProps) {
   const statusTint = data
     ? data.status === "no-anomaly"
       ? {
-          text: "text-cyan-glow",
-          bg: "bg-cyan-glow/15",
-          border: "border-cyan-glow/30",
-          dot: "#22e0ff",
+          text: "text-emerald-300",
+          bg: "bg-emerald-500/10",
+          border: "border-emerald-500/30",
+          dot: "#10b981",
         }
       : data.status === "low-activity"
         ? {
-            text: "text-amber-glow",
-            bg: "bg-amber-glow/15",
-            border: "border-amber-glow/30",
-            dot: "#ffb547",
+            text: "text-amber-300",
+            bg: "bg-amber-500/10",
+            border: "border-amber-500/30",
+            dot: "#f59e0b",
           }
         : {
-            text: "text-rose-glow",
-            bg: "bg-rose-glow/15",
-            border: "border-rose-glow/30",
-            dot: "#ff5c7a",
+            text: "text-red-300",
+            bg: "bg-red-500/10",
+            border: "border-red-500/30",
+            dot: "#ef4444",
           }
     : null;
 
@@ -477,7 +478,7 @@ function FirmsScan({ lot }: FirmsScanProps) {
                 className={cn(
                   "font-mono uppercase tracking-wide",
                   data.source === "live"
-                    ? "text-cyan-glow"
+                    ? "text-emerald-300"
                     : "text-white/50",
                 )}
               >
@@ -572,10 +573,10 @@ function FirmsMiniMap({ data, lot }: FirmsMiniMapProps) {
           const p = project(d.longitude, d.latitude);
           const color =
             data.status === "review-recommended"
-              ? "#ff5c7a"
+              ? "#ef4444"
               : data.status === "low-activity"
-                ? "#ffb547"
-                : "#22e0ff";
+                ? "#f59e0b"
+                : "#10b981";
           return (
             <g key={i}>
               <circle cx={p.x} cy={p.y} r={3.5} fill={color} opacity={0.25} />
@@ -630,11 +631,11 @@ function EvidenceCard({ lot }: EvidenceCardProps) {
           >
             <div className="flex items-center gap-2">
               {item.present ? (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-glow/15 text-cyan-glow ring-1 ring-inset ring-cyan-glow/30">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-500/30">
                   <Check size={12} strokeWidth={2.75} />
                 </span>
               ) : (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-glow/15 text-rose-glow ring-1 ring-inset ring-rose-glow/30">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500/15 text-red-300 ring-1 ring-inset ring-red-500/30">
                   <X size={12} strokeWidth={2.75} />
                 </span>
               )}
@@ -643,7 +644,7 @@ function EvidenceCard({ lot }: EvidenceCardProps) {
             <span
               className={cn(
                 "font-mono text-[10px] uppercase tracking-[0.14em]",
-                item.present ? "text-white/50" : "text-rose-glow/80",
+                item.present ? "text-white/50" : "text-red-300/80",
               )}
             >
               {item.present ? "Available" : "Missing"}
@@ -662,10 +663,10 @@ function EvidenceCard({ lot }: EvidenceCardProps) {
               className={cn(
                 "h-full rounded-full",
                 pct >= 80
-                  ? "bg-cyan-glow"
+                  ? "bg-emerald-400"
                   : pct >= 50
-                    ? "bg-amber-glow"
-                    : "bg-rose-glow",
+                    ? "bg-amber-400"
+                    : "bg-red-400",
               )}
             />
           </div>
@@ -698,9 +699,9 @@ function AnalyticsCard({ lot }: AnalyticsCardProps) {
   const refs = referencePrices[lot.dCode];
 
   const recText = {
-    low: "text-cyan-glow",
-    medium: "text-amber-glow",
-    high: "text-rose-glow",
+    low: "text-emerald-300",
+    medium: "text-amber-300",
+    high: "text-red-300",
   }[tier];
 
   const tiles: Array<{
@@ -741,10 +742,10 @@ function AnalyticsCard({ lot }: AnalyticsCardProps) {
               className={cn(
                 "h-full rounded-full",
                 analytics.documentCompleteness >= 80
-                  ? "bg-cyan-glow"
+                  ? "bg-emerald-400"
                   : analytics.documentCompleteness >= 50
-                    ? "bg-amber-glow"
-                    : "bg-rose-glow",
+                    ? "bg-amber-400"
+                    : "bg-red-400",
               )}
             />
           </div>
@@ -758,8 +759,8 @@ function AnalyticsCard({ lot }: AnalyticsCardProps) {
           className={cn(
             "pill border",
             analytics.satelliteMismatch
-              ? "bg-rose-glow/15 border-rose-glow/30 text-rose-glow"
-              : "bg-cyan-glow/15 border-cyan-glow/30 text-cyan-glow",
+              ? "bg-red-500/10 border-red-500/30 text-red-300"
+              : "bg-emerald-500/10 border-emerald-500/30 text-emerald-300",
           )}
         >
           {analytics.satelliteMismatch ? "Yes" : "No"}
@@ -832,7 +833,7 @@ function AnalyticsCard({ lot }: AnalyticsCardProps) {
           </div>
           <div className="relative mt-3 h-2 rounded-full bg-white/[0.06]">
             <div
-              className="absolute inset-y-0 rounded-full bg-cyan-glow/10"
+              className="absolute inset-y-0 rounded-full bg-steel-400/10"
               style={{
                 left: `${priceToPct(refs.low)}%`,
                 width: `${Math.max(0, priceToPct(refs.high) - priceToPct(refs.low))}%`,
@@ -857,7 +858,7 @@ function AnalyticsCard({ lot }: AnalyticsCardProps) {
                 delay: 0.3,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-glow shadow-glowCyan ring-2 ring-space-900"
+              className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-steel-300 ring-2 ring-space-900"
               style={{ left: `${lotPct}%` }}
             />
           </div>
@@ -932,11 +933,11 @@ export default function AuditResults({
   const isHigh = tier === "high";
 
   const dCodePillStyle = {
-    D3: "bg-cyan-glow/15 border-cyan-glow/30 text-cyan-glow",
-    D4: "bg-violet-400/15 border-violet-300/30 text-violet-200",
-    D5: "bg-amber-glow/15 border-amber-glow/30 text-amber-glow",
-    D6: "bg-emerald-400/15 border-emerald-300/30 text-emerald-200",
-    D7: "bg-rose-glow/15 border-rose-glow/30 text-rose-glow",
+    D3: "bg-steel-400/15 border-steel-400/30 text-steel-300",
+    D4: "bg-steel-400/15 border-steel-400/30 text-steel-300",
+    D5: "bg-amber-500/10 border-amber-500/30 text-amber-300",
+    D6: "bg-emerald-500/10 border-emerald-500/30 text-emerald-300",
+    D7: "bg-red-500/10 border-red-500/30 text-red-300",
   }[lot.dCode];
 
   return (
@@ -1078,6 +1079,11 @@ export default function AuditResults({
               </Card>
             </div>
 
+            {/* Ambient Air Quality (Google Air Quality API) */}
+            <div className="col-span-12 lg:col-span-6">
+              <AirQualityCard lot={lot} className="h-full" />
+            </div>
+
             {/* Google 3D Site Inspection */}
             <div className="col-span-12 lg:col-span-6">
               <Card index={6} className="h-full">
@@ -1091,7 +1097,7 @@ export default function AuditResults({
             </div>
 
             {/* EPA RFS Context */}
-            <div className="col-span-12 lg:col-span-6">
+            <div className="col-span-12">
               <Card index={7} className="h-full">
                 <EpaContextCard />
               </Card>

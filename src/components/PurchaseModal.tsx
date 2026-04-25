@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Receipt, ArrowRight } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 import { fmtRins, fmtUSD } from "../lib/format";
 import type { RinLot } from "../types/rin";
 
@@ -52,12 +52,11 @@ export default function PurchaseModal({
               }}
               className="relative"
             >
-              <div className="absolute inset-0 rounded-full bg-cyan-glow/20 blur-2xl" />
-              <div className="relative h-16 w-16 rounded-full bg-gradient-to-b from-cyan-glow/90 to-cyan-500/80 flex items-center justify-center shadow-glowCyan border border-cyan-glow/40">
+              <div className="relative h-16 w-16 rounded-full bg-emerald-500/15 flex items-center justify-center border border-emerald-500/30">
                 <Check
                   size={32}
                   strokeWidth={3}
-                  className="text-space-900"
+                  className="text-emerald-300"
                 />
               </div>
             </motion.div>
@@ -82,7 +81,7 @@ export default function PurchaseModal({
               <span className="text-white tabular-nums">
                 {fmtRins(lot.quantity)} RINs
               </span>
-              <span className="text-cyan-glow tabular-nums">
+              <span className="text-amber-300 tabular-nums">
                 {fmtUSD(lot.quantity * lot.price)}
               </span>
             </div>
@@ -99,7 +98,6 @@ export default function PurchaseModal({
                 onClick={onViewAuditPacket}
                 className="btn-primary justify-center w-full"
               >
-                <Receipt size={15} strokeWidth={2.25} />
                 View Audit Packet
                 <ArrowRight size={14} strokeWidth={2.25} />
               </button>
