@@ -169,7 +169,9 @@ export function LiveAuctionPanel({ auctionId, onClose }: LiveAuctionPanelProps) 
     if (!auction) return;
     setSubmitting(true);
     try {
-      await endAuction(auction.auctionId, { company: company.trim() });
+      await endAuction(auction.auctionId, {
+        company: auction.sellerCompany,
+      });
       toast({ title: "Auction ended", variant: "success" });
     } catch (err) {
       toast({
@@ -328,11 +330,11 @@ export function LiveAuctionPanel({ auctionId, onClose }: LiveAuctionPanelProps) 
               </form>
             )}
 
-            {/* Seller end button */}
-            {!isExpired && isSeller && (
+            {/* Manual end button — always available while auction is live */}
+            {!isExpired && (
               <Button
                 type="button"
-                variant="danger"
+                variant={isSeller ? "danger" : "ghost"}
                 onClick={onEnd}
                 disabled={submitting}
               >
