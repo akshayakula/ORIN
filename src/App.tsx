@@ -313,9 +313,9 @@ export default function App() {
       </Dialog>
 
       <RoleSplash
-        open={role === null || forceRoleSplash}
+        open={forceRoleSplash}
         onPick={onPickRole}
-        onDismiss={forceRoleSplash ? () => setForceRoleSplash(false) : undefined}
+        onDismiss={() => setForceRoleSplash(false)}
       />
 
       <BuyerOnboardingDialog
